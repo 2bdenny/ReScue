@@ -9,21 +9,23 @@
 ---
 
 # Tools
-## SlowFuzz
+>### SlowFuzz
 - SlowFuzz is available on GitHub: [slowfuzz](https://github.com/nettrino/slowfuzz)
 - The regular expression library we used in the experiment is the version 10.31 (the latest version by 2018.7.7) of [PCRE2](ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/).
 
-## RXXR2
+>### RXXR2
 - RXXR2 is available at authors' page: [rxxr2](http://www.cs.bham.ac.uk/~hxt/research/rxxr2/)
 
-## Rexploiter
+>### Rexploiter
 - Rexploiter is not available directly.
 - We requested for a runnable version by sending an email to one of the authors, Mr. Wüstholz, whose website is [www.wuestholz.com](http://www.wuestholz.com/).
 
-## NFAA
+>### NFAA
 - NFAA is a short for the tool presented in the paper: [weideman2016analyzing](https://rd.springer.com/chapter/10.1007/978-3-319-40946-7_27).
 - The tool is available on authors' GitHub: [RegexStaticAnalysis](https://github.com/NicolaasWeideman/RegexStaticAnalysis)
 - We use the short NFAA (extracted from the paper title) to differ this tool from other static analysis tools.
+
+---
 
 # Log
 The result of testing a regex set with a tool should be generated following the format:
