@@ -26,6 +26,7 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
 ## Directory
+```
 ReScue
 ├─jars 		# Put prefuse.jar here
 ├─release	# ReScue.jar
@@ -45,6 +46,7 @@ ReScue
 	├─data			# Regex set txt files put here
 	└─scripts
 		└─extractor	# Extract regex from projects' source
+```
 
 ## Dependencies
 1. JDK 1.8
