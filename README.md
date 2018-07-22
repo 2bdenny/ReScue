@@ -25,6 +25,27 @@ Attack success, attack string is:
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
+## Directory
+ReScue
+├─jars 		# Put prefuse.jar here
+├─release	# ReScue.jar
+├─src/cn/edu/nju/moon/redos/ # TOBE UPLOAD
+│     ├─attackers
+│     │  ├─ga
+│     │  │  ├─crossovers
+│     │  │  ├─initiators
+│     │  │  ├─mutators
+│     │  │  └─selectors
+│     │  └─pp
+│     ├─regex
+│     ├─tester
+│     │  └─gui
+│     └─utils
+└─test
+	├─data			# Regex set txt files put here
+	└─scripts
+		└─extractor	# Extract regex from projects' source
+
 ## Dependencies
 1. JDK 1.8
 2. The prefuse visualization toolkit: [prefuse.jar](http://prefuse.org/)
