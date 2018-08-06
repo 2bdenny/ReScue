@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import cn.edu.nju.moon.redos.Trace;
-import cn.edu.nju.moon.redos.utils.JDKPatternUtils;
+import cn.edu.nju.moon.redos.utils.ReScuePatternUtils;
 import cn.edu.nju.moon.redos.utils.NodeRelation;
 import cn.edu.nju.moon.redos.utils.RegexViewer;
 import prefuse.data.Schema;
@@ -3160,7 +3160,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     static final class SingleS extends CharProperty {
         final int c;
         SingleS(int c) {
-        	super(JDKPatternUtils.convertString(c));
+        	super(ReScuePatternUtils.convertString(c));
         	this.c = c;
         }
         boolean isSatisfiedBy(int ch) {
@@ -3181,7 +3181,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     static final class Single extends BmpCharProperty {
         final int c;
         Single(int c) {
-        	super(JDKPatternUtils.convertString(c));
+        	super(ReScuePatternUtils.convertString(c));
         	this.c = c;
         }
         boolean isSatisfiedBy(int ch) {
@@ -3203,7 +3203,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
         final int lower;
         final int upper;
         SingleI(int lower, int upper) {
-        	super(JDKPatternUtils.convertString(upper));
+        	super(ReScuePatternUtils.convertString(upper));
             this.lower = lower;
             this.upper = upper;
         }
@@ -3225,7 +3225,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     static final class SingleU extends CharProperty {
         final int lower;
         SingleU(int lower) {
-        	super(JDKPatternUtils.convertString(lower));
+        	super(ReScuePatternUtils.convertString(lower));
             this.lower = lower;
         }
         boolean isSatisfiedBy(int ch) {
@@ -3344,7 +3344,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     static class SliceNode extends Node {
         int[] buffer;
         SliceNode(int[] buf) {
-        	super(JDKPatternUtils.convertString(buf));
+        	super(ReScuePatternUtils.convertString(buf));
             buffer = buf;
         }
         boolean study(TreeInfo info) {
@@ -3523,7 +3523,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
      */
     private static CharProperty rangeFor(final int lower,
                                          final int upper) {
-        return new CharProperty(JDKPatternUtils.convertString(lower) + "-" + JDKPatternUtils.convertString(upper)) {
+        return new CharProperty(ReScuePatternUtils.convertString(lower) + "-" + ReScuePatternUtils.convertString(upper)) {
                 boolean isSatisfiedBy(int ch) {
                     return inRange(lower, ch, upper);}};
     }
@@ -3535,14 +3535,14 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     private CharProperty caseInsensitiveRangeFor(final int lower,
                                                  final int upper) {
         if (has(UNICODE_CASE))
-            return new CharProperty(JDKPatternUtils.convertString(lower) + "-" + JDKPatternUtils.convertString(upper)) {
+            return new CharProperty(ReScuePatternUtils.convertString(lower) + "-" + ReScuePatternUtils.convertString(upper)) {
                 boolean isSatisfiedBy(int ch) {
                     if (inRange(lower, ch, upper))
                         return true;
                     int up = Character.toUpperCase(ch);
                     return inRange(lower, up, upper) ||
                            inRange(lower, Character.toLowerCase(up), upper);}};
-        return new CharProperty(JDKPatternUtils.convertString(lower) + "-" + JDKPatternUtils.convertString(upper)) {
+        return new CharProperty(ReScuePatternUtils.convertString(lower) + "-" + ReScuePatternUtils.convertString(upper)) {
             boolean isSatisfiedBy(int ch) {
                 return inRange(lower, ch, upper) ||
                     ASCII.isAscii(ch) &&
@@ -4898,7 +4898,7 @@ NEXT:       for (i = patternLength; i > 0; i--) {
             return new BnM(src, lastOcc, optoSft, node.next);
         }
         BnM(int[] src, int[] lastOcc, int[] optoSft, Node next) {
-        	super(JDKPatternUtils.convertString(src));
+        	super(ReScuePatternUtils.convertString(src));
             this.buffer = src;
             this.lastOcc = lastOcc;
             this.optoSft = optoSft;
