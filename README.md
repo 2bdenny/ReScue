@@ -53,7 +53,7 @@ ReScue
 2. The prefuse visualization toolkit: [prefuse.jar](http://prefuse.org/)
 3. [junit-4.12.jar](http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar)
 4. [hamcrest-core-1.3.jar](http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar)
-5. [commons-lang3-3.7.jar](http://mirrors.hust.edu.cn/apache//commons//lang//binaries/commons-lang3-3.7-bin.tar.gz)
+5. [commons-lang-2.6.jar](http://mirrors.hust.edu.cn/apache//commons/lang/binaries/commons-lang-2.6-bin.tar.gz)
 
 ## Confirmed ReDoS vulnerabilities
 1. https://github.com/nhnent/tui.editor/issues/141
