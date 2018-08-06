@@ -8,12 +8,10 @@ import cn.edu.nju.moon.redos.attackers.ga.Crossover;
 import cn.edu.nju.moon.redos.attackers.ga.Initiator;
 import cn.edu.nju.moon.redos.attackers.ga.Mutator;
 import cn.edu.nju.moon.redos.attackers.ga.Population;
-import cn.edu.nju.moon.redos.attackers.ga.Selector;
 import cn.edu.nju.moon.redos.attackers.ga.crossovers.RollCrossover;
 import cn.edu.nju.moon.redos.attackers.ga.initiators.GeneticInitiator;
 import cn.edu.nju.moon.redos.attackers.ga.mutators.MultipleMutator;
-import cn.edu.nju.moon.redos.attackers.ga.selectors.NonRepeatSelector;
-import cn.edu.nju.moon.redos.attackers.pp.Pumper;
+//import cn.edu.nju.moon.redos.attackers.pp.Pumper;
 import cn.edu.nju.moon.redos.regex.ReScueMatcher;
 import cn.edu.nju.moon.redos.regex.ReScuePattern;
 
@@ -72,7 +70,7 @@ public class GeneticAttackerWithoutPumping extends RedosAttacker {
 		Mutator mutator = new MultipleMutator(false, GeneticAttacker.MUT_POSSIBILITY);
 		Crossover crossover = new RollCrossover(false, 0.01);
 		
-		Pumper pumper = new Pumper(GeneticAttacker.MAX_STR_LEN);
+//		Pumper pumper = new Pumper(GeneticAttacker.MAX_STR_LEN);
 		
 		// Init population
 		int init_result = initiator.initiate(pop, jdkPattern, slices, prefixes);
