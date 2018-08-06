@@ -49,5 +49,19 @@ ReScue
 ```
 
 ## Dependencies
-1. JDK 1.8
+1. JDK 1.8 and Python3
 2. The prefuse visualization toolkit: [prefuse.jar](http://prefuse.org/)
+3. [junit-4.12.jar](http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar)
+4. [hamcrest-core-1.3.jar](http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar)
+5. [commons-lang3-3.7.jar](http://mirrors.hust.edu.cn/apache//commons//lang//binaries/commons-lang3-3.7-bin.tar.gz)
+
+## Confirmed ReDoS vulnerabilities
+1. https://github.com/nhnent/tui.editor/issues/141
+2. https://github.com/ajaxorg/ace/issues/3638
+3. https://github.com/meteor/meteor/issues/9731
+4. https://github.com/openstates/openstates/issues/2020
+
+## ReDoS vulnerabilities under testing
+1. https://github.com/metabase/metabase/issues/7354
+2. https://github.com/prose/prose/issues/1071
+3. https://github.com/adobe/brackets/issues/14154
