@@ -5528,6 +5528,8 @@ NEXT:       while (i <= last) {
      * Paint the regex by {prefuse.jar}
      */
     int nodeIndex = 0;
+    boolean painted = false;
+    public Map<Integer, Node> nodeMap = new HashMap<Integer, Node>();
     public void paintRegex() {
     	HashMap<Node, Integer> visitedNodes = new HashMap<Node, Integer>();
         HashMap<Node, List<Node>> visitedEdges = new HashMap<Node, List<Node>>();
@@ -5546,6 +5548,15 @@ NEXT:       while (i <= last) {
     	nodeIndex = 0;
     	paintNode(null, root, "", nodes, edges, visitedNodes, visitedEdges);
     	RegexViewer.paintRegex(this, nodes, edges, true, "from", "to", "Node");
+    	painted = true;
+    }
+    
+    public void paintTrace(Trace t){
+    	if (painted) RegexViewer.paintLog(this, t.getLogNode(), t.getLogIdx());
+    	else {
+    		paintRegex();
+    		RegexViewer.paintLog(this, t.getLogNode(), t.getLogIdx());
+    	}
     }
     
     /**
@@ -5566,6 +5577,7 @@ NEXT:       while (i <= last) {
     	if (prev == null) {
     		int rid = nodes.addRow();
 //    		nodes.set(rid, "Node", cur.toString().split("[$@]")[1] + "\n" + cur.self);
+    		nodeMap.put(nodeIndex, cur);
     		nodes.set(rid, "Node", (nodeIndex++) + ": " + cur.toString().split("[$@]")[1] + "\n" + cur.self);
     		visitedNodes.put(cur, rid);
     		
@@ -5576,6 +5588,7 @@ NEXT:       while (i <= last) {
 				// Save the node
 				int rid = nodes.addRow();
 //				nodes.set(rid, "Node", cur.toString().split("\\$")[1] + "\n" + cur.self);
+				nodeMap.put(nodeIndex, cur);
 				nodes.set(rid, "Node", (nodeIndex++) + ": " + cur.toString().split("[$@]")[1] + "\n" + cur.self);
 				visitedNodes.put(cur, rid);
 				

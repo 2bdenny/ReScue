@@ -1,6 +1,8 @@
 package cn.edu.nju.moon.redos;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import cn.edu.nju.moon.redos.attackers.GeneticAttacker;
@@ -12,16 +14,28 @@ import cn.edu.nju.moon.redos.regex.ReScuePattern.Node;
  */
 //public class Trace implements Comparable<Trace>{
 public class Trace{
-	public double threshold = 1e5; 	// First judge: it's vulnerable when the number of match steps larger than CATASTROPHIC_THRESHOLD
+	public double threshold = 1e5; // First judge: it's vulnerable when the number of match steps larger than CATASTROPHIC_THRESHOLD
 	
-	public boolean matchSuccess; 	// String accepted or not
-	public String str; 				// The Input string
-	public String effectiveStr; 	// The effective substring of str
-	private Set<Node> allNodes; 	// All Nodes
+	public boolean matchSuccess; // String accepted or not
+	public String str; // The Input string
+	public String effectiveStr; // The effective substring of str
+	private Set<Node> allNodes; // All Nodes
 	private int logHash;
 	private int logSize;
-	private int finishIndex; 		// The index of effective string's end
+	private int finishIndex; // The index of effective string's end
+	
 	private int[] eachStep;
+	private boolean isDetail = false;
+	private List<Node> logNode; // The path of match process
+	public List<Node> getLogNode() {
+		return logNode;
+	}
+
+	public List<Integer> getLogIdx() {
+		return logIdx;
+	}
+
+	private List<Integer> logIdx;
 	
 	public Trace(double threshold) {
 		this.matchSuccess = false;
@@ -32,8 +46,14 @@ public class Trace{
 		
 		this.logSize = 0;
 		this.logHash = -1;
-		
 		this.threshold = threshold;
+	}
+	
+	public Trace(double threshold, boolean isDetail) {
+		this(threshold);
+		this.logNode = new LinkedList<Node>();
+		this.logIdx = new LinkedList<Integer>();
+		this.isDetail = isDetail;
 	}
 	
 	@Override
@@ -61,25 +81,11 @@ public class Trace{
 		else this.logHash = this.logHash ^ node.hashCode();
 		
 		this.logSize++;
-		
 		this.allNodes.add(node);
-		
-    	return logSize <= this.threshold;
-	}
-	
-	/**
-	 * Log the next match() calling
-	 * This log step is working for the Second Judge
-	 * @param idx Current index in the input string
-	 * @return Whether current match steps larger than the Second Judge's threshold
-	 */
-	public boolean logValidate(int idx) {
-		finishIndex = finishIndex > idx ? finishIndex : idx;
-		
-		this.eachStep[idx] ++;
-		
-		this.logSize++;
-		
+		if (this.isDetail) {
+			this.logNode.add(node);
+			this.logIdx.add(idx);
+		}
     	return logSize <= this.threshold;
 	}
 	
@@ -104,7 +110,8 @@ public class Trace{
 	 */
 	public boolean attackSuccess() {
 		return this.logSize > this.threshold;
-	}	
+	}
+	
 	
 	/**
 	 * Item of the log (for the First Judge)
@@ -153,7 +160,7 @@ public class Trace{
 	}
 	
 	/**
-	 * Get match step (work for {@ValidatePattern} & (@ValidateMatcher})
+	 * Get match steps
 	 * @return
 	 */
 	public int getMatchSteps() {

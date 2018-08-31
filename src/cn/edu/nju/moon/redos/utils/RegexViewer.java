@@ -1,8 +1,23 @@
 package cn.edu.nju.moon.redos.utils;
 
-import javax.swing.JFrame;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import cn.edu.nju.moon.redos.Trace;
+import cn.edu.nju.moon.redos.regex.ReScueMatcher;
 import cn.edu.nju.moon.redos.regex.ReScuePattern;
+import cn.edu.nju.moon.redos.regex.ReScuePattern.Node;
 import prefuse.Display;
 import prefuse.Visualization;
 import prefuse.action.ActionList;
@@ -21,12 +36,16 @@ import prefuse.data.Table;
 import prefuse.render.DefaultRendererFactory;
 import prefuse.render.LabelRenderer;
 import prefuse.util.ColorLib;
+import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
 /**
  * The regex structure viewer, its GUI is based on prefuse.jar
  */
 public class RegexViewer {
+	static Graph g;
+	static Visualization vis;
+	static int curStep = 0;
     /**
      * Assistant method, print the data in the table
      * @param t
@@ -56,9 +75,9 @@ public class RegexViewer {
      * @param nodeName
      */
     public static void paintRegex(ReScuePattern pattern, Table nodes, Table edges, boolean directed, String from, String to, String nodeName) {
-    	Graph g = new Graph(nodes, edges, directed, from, to);
+    	g = new Graph(nodes, edges, directed, from, to);
     	
-    	Visualization vis = new Visualization();
+    	vis = new Visualization();
     	vis.add("graph", g);
 
         LabelRenderer label = new LabelRenderer(nodeName);
@@ -87,22 +106,83 @@ public class RegexViewer {
         vis.putAction("layout", layout);
         
         Display display = new Display(vis);
-        display.setSize(800, 600);
-        display.pan(250, 250);        display.addControlListener(new DragControl());
+        display.setSize(1200, 950);
+        display.pan(250, 250);
+        display.addControlListener(new DragControl());
         display.addControlListener(new PanControl());
         display.addControlListener(new ZoomControl());
         display.addControlListener(new WheelZoomControl());
         display.addControlListener(new FocusControl(1));
         display.addControlListener(new ZoomToFitControl());
         
+        JPanel inputPanel = new JPanel();
+        JTextField input = new JTextField(30);
+        JButton btn = new JButton("Start");
+        JButton btnn = new JButton("Next");
+        JLabel stepsName = new JLabel("Steps: ");
+        JLabel stepsNum = new JLabel("0");
+        btn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inputStr = input.getText();
+				ReScueMatcher m = pattern.matcher(inputStr, new Trace(1e4, true));
+				Trace t = m.find();
+				curStep = 0;
+				btnn.setEnabled(true);
+				stepsNum.setText(t.getMatchSteps() + "");
+				paintLog(pattern, t.getLogNode(), t.getLogIdx(), ColorLib.rgb(200, 150, 150));
+		}});
+        btnn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String inputStr = input.getText();
+				ReScueMatcher m = pattern.matcher(inputStr, new Trace(1e4, true));
+				Trace t = m.find();
+				paintLog(pattern, t.getLogNode(), t.getLogIdx());
+				curStep++;
+				stepsNum.setText("" + (t.getMatchSteps() - curStep));
+				if (curStep == t.getMatchSteps()) {
+					btnn.setEnabled(false);
+				}
+		}});
+        inputPanel.add(stepsName);
+        inputPanel.add(stepsNum);
+        inputPanel.add(input);
+        inputPanel.add(btn);
+        inputPanel.add(btnn);
+        
+        JPanel drawing = new JPanel();
+        drawing.add(display);
+        
         // Launching the visualization        
         JFrame jf = new JFrame();
+        jf.setLayout(new BorderLayout());
         jf.setTitle(pattern.pattern());
-        jf.setSize(800, 600);
+        jf.setSize(1400, 1000);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jf.add(display);
+        
+        jf.add(inputPanel, BorderLayout.NORTH);
+        jf.add(drawing, BorderLayout.CENTER);
+        
         vis.run("color");
         vis.run("layout");
         jf.setVisible(true);
+    }
+    
+    public static void paintLog(ReScuePattern p, List<Node> logNode, List<Integer> logIdx, int color) {
+    	// Iterate over VisualItems in Visualization vis
+		Iterator<NodeItem> v_it = vis.items("graph.nodes");
+    	while(v_it.hasNext()) {
+    	    NodeItem item = v_it.next();
+    	    String text = (String) item.get("Node");
+    	    int idx = Integer.parseInt(text.split(": ")[0]);
+    	    if (p.nodeMap.get(idx) == logNode.get(curStep)) item.setFillColor(color);
+    	    else item.setFillColor(ColorLib.rgb(200, 200, 200));
+    	}
+    	vis.repaint();
+    }
+    
+    public static void paintLog(ReScuePattern p, List<Node> logNode, List<Integer> logIdx) {
+    	paintLog(p, logNode, logIdx, ColorLib.rgb(150, 150, 200));
     }
 }
