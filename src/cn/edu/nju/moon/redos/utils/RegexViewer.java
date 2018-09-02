@@ -39,6 +39,27 @@ import prefuse.util.ColorLib;
 import prefuse.visual.NodeItem;
 import prefuse.visual.VisualItem;
 
+class AutoMatchPlayer extends Thread{
+	JButton abtn;
+	public AutoMatchPlayer(JButton btn) {
+		this.abtn = btn;
+	}
+	
+	@Override
+    public void run() {
+		while (abtn.isEnabled()) {
+			abtn.doClick();
+			
+			try {
+				Thread.currentThread().sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+    }
+}
+
 /**
  * The regex structure viewer, its GUI is based on prefuse.jar
  */
@@ -115,10 +136,12 @@ public class RegexViewer {
         display.addControlListener(new FocusControl(1));
         display.addControlListener(new ZoomToFitControl());
         
+        JFrame jf = new JFrame();
         JPanel inputPanel = new JPanel();
         JTextField input = new JTextField(30);
         JButton btn = new JButton("Start");
         JButton btnn = new JButton("Next");
+        JButton abtn = new JButton("AutoPlay");
         JLabel stepsName = new JLabel("Steps: ");
         JLabel stepsNum = new JLabel("0");
         btn.addActionListener(new ActionListener(){
@@ -145,17 +168,25 @@ public class RegexViewer {
 					btnn.setEnabled(false);
 				}
 		}});
+        abtn.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Thread tmp = new AutoMatchPlayer(btnn);
+				tmp.start();
+			}
+        });
+        
         inputPanel.add(stepsName);
         inputPanel.add(stepsNum);
         inputPanel.add(input);
         inputPanel.add(btn);
         inputPanel.add(btnn);
+        inputPanel.add(abtn);
         
         JPanel drawing = new JPanel();
         drawing.add(display);
         
         // Launching the visualization        
-        JFrame jf = new JFrame();
         jf.setLayout(new BorderLayout());
         jf.setTitle(pattern.pattern());
         jf.setSize(1400, 1000);
