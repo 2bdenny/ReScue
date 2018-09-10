@@ -27,6 +27,37 @@ import cn.edu.nju.moon.redos.utils.RegexFormatter;
 @RunWith(Parameterized.class)
 public class RedosTester {
 	private RedosAttacker attacker;
+	private static final String[] usage = {"Usage:",
+		"java -jar rescue.jar -h",
+		"\tShow this text.",
+		"",
+		"java -jar ReScue.jar <-sl string length> <-pz population size> <-g generations>", 
+		"\t\t\t\t\t<-cp crossover probability> <-mp mutation probability>",
+		"\t\t\t\t\t<-q> <-v>",
+		"\tAttack the <regex> with the <attacker>",
+		"\tby default(sl is 128, pz is 200, g is 200, cp is 10(0.1), mp is 10(0.1)):",
+		"\t\tjava -jar ReScue.jar",
+		"\tor:",
+		"\t\tjava -jar ReScue.jar -sl 128 -pz 200 -g 200 -cp 10 -mp 10",
+		"",
+		"-sl\tLimit the string length",
+		"",
+		"-pz\tLimit the population size",
+		"",
+		"-g\tLimit the generation",
+		"",
+		"-cp\tSet the crossover possiblity, the real possibility is calculated by cp / 100.0",
+		"",
+		"-mp\tSet the mutation possibility, the real possibility is calculated by mp / 100.0",
+		"",
+		"-v\tView the inner structure of a regex, usage:",
+		"\tjava -jar ReScue.jar -v",
+		"\tor combine with other options",
+		"",
+		"-q\tQuiet mode, do not show input message, usage:",
+		"\tjava -jar ReScue.jar -q",
+		"\tor combine with other options"
+	};
 	
 	public static void main(String[] args) {		
 		if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
@@ -35,43 +66,6 @@ public class RedosTester {
 		} else {			
 			// -h (--help)
 			if (args.length == 1 && args[0].equalsIgnoreCase("-h")) {
-				// Read the usage.txt
-				String[] usage = {"Usage:",
-					"java -jar rescue.jar -h",
-					"\tShow this text.",
-					"",
-					"java -jar rescue.jar <-sl string length> <-pz population size> <-g generations>", 
-					"\t\t\t\t\t<-cp crossover probability> <-mp mutation probability>",
-					"\t\t\t\t\t<-q> <-v>",
-					"\tAttack the <regex> with the <attacker>",
-					"\tby default(sl is 128, pz is 200, g is 200, cp is 10(0.1), mp is 10(0.1)):",
-					"\t\tjava -jar rescue.jar",
-					"\tor:",
-					"\t\tjava -jar rescue.jar -sl 128 -pz 200 -g 200 -cp 10 -mp 10",
-					"",
-					"-sl\tLimit the string length",
-					"",
-					"-pz\tLimit the population size",
-					"",
-					"-g\tLimit the generation",
-					"",
-					"-cp\tSet the crossover possiblity, the real possibility is calculated by cp / 100.0",
-					"",
-					"-mp\tSet the mutation possibility, the real possibility is calculated by mp / 100.0",
-					"",
-					"-v\tView the inner structure of a regex, usage:",
-					"\tjava -jar rescue.jar -v",
-					"\tor combine with other options",
-					"",
-					"-q\tQuiet mode, do not show input message, usage:",
-					"\tjava -jar rescue.jar -q",
-					"\tor combine with other options"
-				};
-//				try {
-//					usage = Files.readAllLines(new File("configs/usage/usage.txt").toPath());
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
 				if (usage != null) {
 					for (String u : usage) System.out.println(u);
 				}
@@ -194,7 +188,6 @@ public class RedosTester {
 			System.out.println(r);
 			try {
 				ReScuePattern p = RegexFormatter.formatRegex(r);
-//				ReScuePattern p = RegexFormatter.formatRegex(r);
 				System.out.print(i + ": ");
 				System.out.println(RegexFormatter.deleteFlag(r));
 				Trace trace = attacker.attack(p);

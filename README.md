@@ -1,3 +1,5 @@
+> ReScue is under testing & debugging now.
+
 ## Using ReScue
 Download the zip, decompress it, then:
 ```
