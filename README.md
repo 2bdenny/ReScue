@@ -1,3 +1,4 @@
+
 > ReScue is under testing & debugging now.
 
 ## Using ReScue
@@ -67,3 +68,7 @@ ReScue
 1. https://github.com/metabase/metabase/issues/7354
 2. https://github.com/prose/prose/issues/1071
 3. https://github.com/adobe/brackets/issues/14154
+
+## Document Build Instructions
+```
+The main class for ReScue is located in cn.edu.nju.moon.redos.tester.RedosTester.java. To build the jar file, create a java project in Eclipse on ReScue\ and use File-Export-Runnable JAR File-Launch configuration: RedosTester to generate it. Do not forget to import dependencies in Java Build Path.
