@@ -31,9 +31,9 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ## Directory
 ```
 ReScue
-├─jars 		# Put prefuse.jar here
+├─jars 		# Put dependencies here (prefuse.jar, etc.)
 ├─release	# ReScue.jar
-├─src/cn/edu/nju/moon/redos/ # TOBE UPLOAD
+├─src/cn/edu/nju/moon/redos/
 │     ├─attackers
 │     │  ├─ga
 │     │  │  ├─crossovers
@@ -42,13 +42,12 @@ ReScue
 │     │  │  └─selectors
 │     │  └─pp
 │     ├─regex
-│     ├─tester
-│     │  └─gui
+│     ├─tester	# Main classes are here
 │     └─utils
 └─test
-	├─data			# Regex set txt files put here
+	├─data				# Put regexes txt files here
 	└─scripts
-		└─extractor	# Extract regex from projects' source
+		└─extractor	# Scripts to extract regexes from projects' source
 ```
 
 ## Dependencies
@@ -70,5 +69,7 @@ ReScue
 3. https://github.com/adobe/brackets/issues/14154
 
 ## Document Build Instructions
-```
-The main class for ReScue is located in cn.edu.nju.moon.redos.tester.RedosTester.java. To build the jar file, create a java project in Eclipse on ReScue\ and use File-Export-Runnable JAR File-Launch configuration: RedosTester to generate it. Do not forget to import dependencies in Java Build Path.
+0. This is a *temporary solution*
+1. The main class for ReScue is located in `cn.edu.nju.moon.redos.tester.RedosTester.java`
+2. To build the `jar` file, create a `java project` in `Eclipse` on directory `ReScue` and use `File - Export-Runnable JAR File - Launch configuration: RedosTester` to generate it
+3. **Do not forget to import dependencies in `Java Build Path`**
