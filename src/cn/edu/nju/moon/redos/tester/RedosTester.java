@@ -115,7 +115,7 @@ public class RedosTester {
                 String inputRegex = input.hasNextLine()
                     ? input.nextLine()
                     : null;
-                String regex = null;
+                String regex = inputRegex;
                 // An array of regexes is used in case there is more than one
                 // being input
                 String[] regexes = null;
@@ -159,13 +159,13 @@ public class RedosTester {
                 }
                 // If not a text file, just a line
                 else {
-                    System.out.println("Input regex: ");
-                    regex = input.hasNextLine() ? input.nextLine() : null;
                     // Makes array with one regex
                     regexes = new String[] { regex };
                 }
+                
                 input.close();
                 regex = regexes[0];
+                System.out.print(regex);
                 if (regex == null || regex.length() < 1) {
                     System.out.println("Please check your regex.");
                     return;

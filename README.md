@@ -7,25 +7,81 @@ Download the zip, decompress it, then:
 cd release/
 java -jar ReScue.jar
 ```
-Sample output should be:
+Sample output for a single regex should be:
 ```
 Input regex: (?=(a+)+b)aaabx
-(?=(a+)+b)aaabx
+(?=(a+)+b)aaabx(?=(a+)+b)aaabx
 1: <14 : 4.0 : aaabx>
 ===Initiate End===
 Node Coverage: 14/14
 find attack string when cross
 ===Genetic Algorithm End===
 Node Coverage: 14/14
-Vulnerable: babaaabbaaaaaaaaaaaaaaaa
-100027 : 4001.08 : babaaabbaaaaaaaaaaaaaaaa
+Vulnerable: aaaaaaaaaaaaaa
+100023 : 6668.2 : aaaaaaaaaaaaaa
+100023 : 6668.2 : aaaaaaaaaaaaaa
+1000031 : aaaaaaaaaaaaaaaaaa
+	Prefix as JSON:	""
+	Pump as JSON:	"aaaa"
+	Suffix as JSON:	"aaaaaaaaaaaaaaaaaa"
+1000248 : 27 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+100000247 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+TIME: 19.543118235 (s)
+Attack success, attack string is:
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+```
+
+Sample output for a text file should be:
+```
+Input regex: regex.txt
+(?=(a+)+b)aaabx(?=(a+)+b)aaabx
+1: <14 : 4.0 : aaabx>
+===Initiate End===
+Node Coverage: 14/14
+find attack string when cross
+===Genetic Algorithm End===
+Node Coverage: 14/14
+Vulnerable: aaaaaaaaaaaaaaaa
+100026 : 5883.882352941177 : aaaaaaaaaaaaaaaa
 100017 : 7144.071428571428 : aaaaaaaaaaaaa
 1000029 : aaaaaaaaaaaaaaaaa
+	Prefix as JSON:	""
+	Pump as JSON:	"aaaa"
+	Suffix as JSON:	"aaaaaaaaaaaaaaaaa"
 1000244 : 27 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 100000246 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-TIME: 20.548258612 (s)
+TIME: 5.368385627 (s)
 Attack success, attack string is:
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+^((ab)*)+$
+1: <10 : 5.666666666666667 : ab>
+===Initiate End===
+Node Coverage: 10/11
+===Genetic Algorithm End===
+Node Coverage: 10/11
+Normal fail
+TIME: 5.381637973 (s)
+Attack failed
+(a+)+c
+3: <6 : 5.5 : c><9 : 8.0 : ca><10 : 5.0 : cac>
+===Initiate End===
+Node Coverage: 10/10
+find attack string when cross
+===Genetic Algorithm End===
+Node Coverage: 10/10
+Vulnerable: aaaaaaaaaaaaaa
+100028 : 6668.533333333334 : aaaaaaaaaaaaaa
+100028 : 6668.533333333334 : aaaaaaaaaaaaaa
+1000036 : aaaaaaaaaaaaaaaaaa
+	Prefix as JSON:	""
+	Pump as JSON:	"aaaa"
+	Suffix as JSON:	"aaaaaaaaaaaaaaaaaa"
+1000251 : 27 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+100000253 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+TIME: 7.576197555 (s)
+Attack success, attack string is:
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
 ```
 
 ## Directory

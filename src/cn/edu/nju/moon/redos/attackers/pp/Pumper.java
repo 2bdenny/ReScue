@@ -1,6 +1,7 @@
 package cn.edu.nju.moon.redos.attackers.pp;
 
 import cn.edu.nju.moon.redos.RedosAttacker;
+import com.google.gson.Gson;
 import cn.edu.nju.moon.redos.Trace;
 import cn.edu.nju.moon.redos.regex.ReScueMatcher;
 import cn.edu.nju.moon.redos.regex.ReScuePattern;
@@ -96,6 +97,10 @@ public class Pumper {
 			Trace tp = vm.find();
 			if (tp.attackSuccess()) {
 				t = tp;
+				// TODO: Print nprefix, npump, nsuffix
+				System.out.println("\tPrefix as JSON:\t" + new Gson().toJson(nprefix));
+				System.out.println("\tPump as JSON:\t" + new Gson().toJson(npump));
+				System.out.println("\tSuffix as JSON:\t" + new Gson().toJson(nsuffix));
 			}
     	}
     	System.out.println(t.getMatchSteps() + " : " + pump_time + " : " + t.str);
