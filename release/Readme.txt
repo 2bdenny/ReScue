@@ -28,6 +28,10 @@ java -jar rescue.jar <-sl string length> <-pz population size> <-g generations>
 -q	Quiet mode, do not show input message, usage:
 	java -jar rescue.jar -q
 	or combine with other options
+
+--regex-file Inputs text file of regexes to program, usage:
+	java -jar rescue.jar
+	> Input regex: regex.txt
 	
 For example:
 	java -jar rescue.jar

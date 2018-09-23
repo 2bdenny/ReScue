@@ -7,7 +7,7 @@ Download the zip, decompress it, then:
 cd release/
 java -jar ReScue.jar
 ```
-Sample output should be:
+Sample output:
 ```
 Input regex: (?=(a+)+b)aaabx
 (?=(a+)+b)aaabx

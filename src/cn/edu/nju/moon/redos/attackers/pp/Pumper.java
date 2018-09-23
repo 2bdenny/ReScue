@@ -1,18 +1,21 @@
 package cn.edu.nju.moon.redos.attackers.pp;
 
 import cn.edu.nju.moon.redos.RedosAttacker;
+import com.google.gson.Gson;
 import cn.edu.nju.moon.redos.Trace;
 import cn.edu.nju.moon.redos.regex.ReScueMatcher;
 import cn.edu.nju.moon.redos.regex.ReScuePattern;
 
 public class Pumper {
-	private int MAX_LEN = 128; // Max repeat times of the effective sub-string
-	
-	public Pumper(int max_len){
-		this.MAX_LEN = max_len;
-	}
-	
-	/**
+    private int MAX_LEN = 128; // Max repeat times of the effective sub-string
+
+
+    public Pumper(int max_len) {
+        this.MAX_LEN = max_len;
+    }
+
+
+    /**
     * Repeating the most effective sub-string of the attack string
     * @param p
     * @param t
@@ -96,6 +99,7 @@ public class Pumper {
 			Trace tp = vm.find();
 			if (tp.attackSuccess()) {
 				t = tp;
+				System.out.println("Prefix, pump, and suffix as JSON:\t" + new Gson().toJson(nprefix + npump + nsuffix));
 			}
     	}
     	System.out.println(t.getMatchSteps() + " : " + pump_time + " : " + t.str);
