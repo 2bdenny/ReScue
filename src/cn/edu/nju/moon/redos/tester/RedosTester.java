@@ -165,7 +165,6 @@ public class RedosTester {
                 
                 input.close();
                 regex = regexes[0];
-                System.out.print(regex);
                 if (regex == null || regex.length() < 1) {
                     System.out.println("Please check your regex.");
                     return;
