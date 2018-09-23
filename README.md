@@ -7,7 +7,7 @@ Download the zip, decompress it, then:
 cd release/
 java -jar ReScue.jar
 ```
-Sample output for a single regex should be:
+Sample output:
 ```
 Input regex: (?=(a+)+b)aaabx
 (?=(a+)+b)aaabx
@@ -17,18 +17,15 @@ Node Coverage: 14/14
 find attack string when cross
 ===Genetic Algorithm End===
 Node Coverage: 14/14
-Vulnerable: aaaaaaaaaaaaaa
-100023 : 6668.2 : aaaaaaaaaaaaaa
-100023 : 6668.2 : aaaaaaaaaaaaaa
-1000031 : aaaaaaaaaaaaaaaaaa
-	Prefix as JSON:	""
-	Pump as JSON:	"aaaa"
-	Suffix as JSON:	"aaaaaaaaaaaaaaaaaa"
-1000248 : 27 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-100000247 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-TIME: 19.543118235 (s)
+Vulnerable: babaaabbaaaaaaaaaaaaaaaa
+100027 : 4001.08 : babaaabbaaaaaaaaaaaaaaaa
+100017 : 7144.071428571428 : aaaaaaaaaaaaa
+1000029 : aaaaaaaaaaaaaaaaa
+1000244 : 27 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+100000246 : aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+TIME: 20.548258612 (s)
 Attack success, attack string is:
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
 ## Directory
