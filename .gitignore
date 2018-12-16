@@ -32,3 +32,5 @@ runnable/
 configs/
 test/data
 bin/
+doc/
+test/PUTs
