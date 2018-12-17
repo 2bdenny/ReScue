@@ -25,7 +25,7 @@ def getGitRepo():
     return re.search('origin\s+(.*)\s+\(fetch\)', out).group(1)
 
 # extract reg from project
-def getRegFromProject(dir, grepreg, inforeg):
+def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, raw_group = 3, lang = 'js'):
     cwd = os.getcwd()
     os.chdir(dir)
 
@@ -40,9 +40,11 @@ def getRegFromProject(dir, grepreg, inforeg):
             continue
         else:
             res = re.search(inforeg, line)
-            reg_file = res.group(1)
-            reg_lineno = res.group(2)
-            reg_raw = res.group(3)
+            print(res.groups())
+
+            reg_file = res.group(file_group)
+            reg_lineno = res.group(lineno_group)
+            reg_raw = res.group(raw_group)
 
             reg_hash = hashlib.md5(reg_raw.encode('utf8')).hexdigest()
 
@@ -52,7 +54,7 @@ def getRegFromProject(dir, grepreg, inforeg):
                 'reg': reg_raw,
                 'reg_hash': reg_hash,
                 'git_commit': latest_git_log_hash,
-                'pl': 'js',
+                'pl': lang,
                 'repo': git_repo
             }
             regs.append(reg)
@@ -88,4 +90,4 @@ def storeRegs(regs):
         cs.execute(sql, val)
     db.commit()
 
-    print(cs.rowcount, "regex stored")
+    print(len(regs), "regex stored")
