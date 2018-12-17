@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+###
+### This file is under developing, and it should be a controller of all scripts
+###
 import argparse
 import os
 
