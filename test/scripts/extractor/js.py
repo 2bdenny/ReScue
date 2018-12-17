@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from utils.base import getRegFromProject
+from utils.base import getRegFromProject, storeRegs
 
 def searchJsFile(dir):
     regs = []
@@ -14,7 +14,7 @@ def searchJsFile(dir):
     return regs
 
 def storeJsRegs(regs):
-    pass
+    storeRegs(regs)
 
 regs = searchJsFile(sys.argv[1])
 storeJsRegs(regs)

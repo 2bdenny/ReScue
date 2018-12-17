@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import json
+import mysql.connector
 import os
 import re
 import sys
@@ -45,11 +47,11 @@ def getRegFromProject(dir, grepreg, inforeg):
             reg_hash = hashlib.md5(reg_raw.encode('utf8')).hexdigest()
 
             reg = {
-                "file": reg_file,
-                "lineno": reg_lineno,
-                "reg": reg_raw,
-                "reg_hash": reg_hash,
-                "git_commit": latest_git_log_hash,
+                'file': reg_file,
+                'lineno': reg_lineno,
+                'reg': reg_raw,
+                'reg_hash': reg_hash,
+                'git_commit': latest_git_log_hash,
                 'pl': 'js',
                 'repo': git_repo
             }
@@ -60,4 +62,30 @@ def getRegFromProject(dir, grepreg, inforeg):
 
 # store regs into db
 def storeRegs(regs):
-    pass
+    # read db info from file
+    dbinfo = None
+    with open('db.json', 'r') as dbf:
+        dbinfo = json.load(dbf)
+
+    if dbinfo is None:
+        print('Errir: Need db.json')
+        return
+
+    # connect db
+    db = mysql.connector.connect(
+        host = dbinfo['host'],
+        port = dbinfo['port'],
+        user = dbinfo['username'],
+        password = dbinfo['password'],
+        database = dbinfo['database']
+    )
+    cs = db.cursor()
+
+    # insert into db
+    for reg in regs:
+        sql = 'INSERT IGNORE INTO regs (reg, reg_hash, repo, file, lineno, git_commit, pl) VALUES (%s, %s, %s, %s, %s, %s, %s)'
+        val = (reg['reg'], reg['reg_hash'], reg['repo'], reg['file'], reg['lineno'], reg['git_commit'], reg['pl'])
+        cs.execute(sql, val)
+    db.commit()
+
+    print(cs.rowcount, "regex stored")
