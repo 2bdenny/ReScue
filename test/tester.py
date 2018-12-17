@@ -14,16 +14,7 @@ def test():
     # test js regex extractor
     extractRegexFromJsProject()
 
-# git latest commit hash
-def getLatestCommitHash():
-    out = check_output('git log -1 --format=\'%H\'', shell = True)
-    hash = out.decode('utf8')[:-1]
-    if len(hash) == 40:
-        return hash
-    else:
-        print('Error: get latest commit hash')
-        print(hash)
-        return None
+
 
 base_dir = {
     'js': './PUTs/js/',
@@ -37,7 +28,7 @@ def getProjects(lang):
 
 def extractRegexFromJsProject():
     jsProjects = getProjects('js')
-    
+
     print(jsProjects)
     pass
 

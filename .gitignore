@@ -34,3 +34,5 @@ test/data
 bin/
 doc/
 test/PUTs
+db.json
+__pycache__/
