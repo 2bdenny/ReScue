@@ -6,8 +6,11 @@ import re
 from os import makedirs
 from os.path import exists, join
 
+from scripts.utils.webutils import *
+
 def analyzeGitUrl(url, storeDir):
-    res = re.search('.*github.com/(.*)/(.*)(\.git)?', url)
+    res = re.search('.*github.com/(.*)/(.*)\.git', url)
+    print(res.groups())
     developer = res.group(1)
     project = res.group(2)
     print(developer, project)
@@ -25,10 +28,10 @@ def analyzeGitUrl(url, storeDir):
         placeDir = join(storeDir, lang)
         if not exists(placeDir):
             makedirs(placeDir)
-        return (lang, placeDir)
+        return (lang, project, placeDir)
     else:
         print('Error: cannot extract language from its project page')
-        return (None, None)
+        return (None, project, None)
 
 def getGitProject(url, dir):
     cwd = os.getcwd()

@@ -4,8 +4,16 @@
 ### and it should be a controller of all scripts
 ###
 import argparse
+import importlib
 
-from scripts.crawler.git import analyzeGitUrl, getGitProject
+# import scripts.extractor.Java
+# import scripts.extractor.JavaScript
+# import scripts.extractor.PHP
+# import scripts.extractor.Python
+
+from scripts.crawler.git import *
+
+from os.path import join
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-url', type = str, default = "", help = "Git repo url only")
@@ -15,5 +23,11 @@ args = parser.parse_args()
 print(args)
 
 if args.url is not None and args.url != "":
-    pass
-    # (url, dir) = analyzeGitUrl(args.url, args.dir)
+    # pass
+    (lang, project, dir) = analyzeGitUrl(args.url, args.dir)
+    print(lang, project, dir)
+    # getGitProject(args.url, dir)
+
+    projDir = join(dir, project)
+    mod = importlib.import_module('scripts.extractor.' + lang)
+    mod.searchFile(projDir)

@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
 
-def searchJsFile(dir):
+from scripts.utils.extractutils import *
+
+def searchFile(dir):
     # the replace syntax
     regs = getRegFromProject(dir, 'grep -P \'(replace)\(/.{1,}?/[igm]{0,3},\' -rno --include \\*.js', '(.*\.js):(\d+):replace\(/(.*)/[igm]{0,3},$', lang = 'js')
     storeRegs(regs)
