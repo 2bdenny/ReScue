@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 ###
-### This file is under developing, and it should be a controller of all scripts
+### This file is under developing,
+### and it should be a controller of all scripts
 ###
 import argparse
 import os
+
+from extractor.java import searchJavaFile
+from extractor.js import searchJsFile
+from extractor.php import searchPhpFile
+from extractor.python import SearchPythonFile
 
 from os import listdir
 from os.path import join
