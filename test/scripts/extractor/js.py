@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-from utils.base import getRegFromProject, storeRegs
 
 def searchJsFile(dir):
     # the replace syntax

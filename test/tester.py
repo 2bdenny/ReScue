@@ -4,50 +4,16 @@
 ### and it should be a controller of all scripts
 ###
 import argparse
-import os
 
-from extractor.java import searchJavaFile
-from extractor.js import searchJsFile
-from extractor.php import searchPhpFile
-from extractor.python import SearchPythonFile
-
-from os import listdir
-from os.path import join
-from subprocess import check_output
-
-# Only used to test
-def test():
-    # test git lastest commit hash
-    print(getLatestCommitHash())
-
-    # test js regex extractor
-    extractRegexFromJsProject()
-
-
-
-base_dir = {
-    'js': './PUTs/js/',
-    'python': './PUTs/python/',
-    'php': './PUTs/php/',
-    'java': './PUTs/java/'
-}
-def getProjects(lang):
-    dirs = listdir(base_dir[lang])
-    return [join(base_dir[lang], x) for x in dirs]
-
-def extractRegexFromJsProject():
-    jsProjects = getProjects('js')
-
-    print(jsProjects)
-    pass
+from scripts.crawler.git import analyzeGitUrl, getGitProject
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-js", type = str, default = "", help = "extract regex from js project")
+parser.add_argument('-url', type = str, default = "", help = "Git repo url only")
+parser.add_argument('-d', '--dir', type = str, default = './PUTs/', help = 'Store repo to this directory')
 args = parser.parse_args()
 
-if args.js != "":
-    extractRegexFromJsProject()
-else:
-    print('js dir is empty')
+print(args)
 
-test()
+if args.url is not None and args.url != "":
+    pass
+    # (url, dir) = analyzeGitUrl(args.url, args.dir)

@@ -3,8 +3,6 @@ import os
 import sys
 import re
 
-from utils.webutils import requestPage
-
 from os import makedirs
 from os.path import exists, join
 
