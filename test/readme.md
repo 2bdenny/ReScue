@@ -37,3 +37,6 @@ which is organized as:
 Line-Number : Validate-Result : Tool-Report-Result : Tool-Analyze-Time : The-Regex
 ```
 Our experiment result is collected from such result files by a python script.
+
+# Assistant Tools
+- The regex extractor: `python tester.py -url [Git Repo URL]`
