@@ -10,10 +10,20 @@ from scripts.utils.webutils import *
 from scripts.utils.extractutils import *
 
 def analyzeGitUrl(url, storeDir):
-    res = re.search('.*github.com/(.*)/(.*)\.git', url)
-    print(res.groups())
-    developer = res.group(1)
-    project = res.group(2)
+    developer = None
+    project = None
+    if url.startswith('https'):
+        res = re.search(r'.*github.com/([^/]*)/([^/]*)', url)
+        developer = res.group(1)
+        project = res.group(2)
+        if project.endswith('.git'):
+            project = project[:-4]
+    elif url.startswith('git@'):
+        res = re.search(r'git@github\.com:([^/]*)/([^/])', url)
+        developer = res.group(1)
+        project = res.group(2)
+        if project.endswith('.git'):
+            project = project[:-4]
     print(developer, project)
 
     repo_page = 'https://github.com/' + developer + '/' + project
@@ -29,18 +39,29 @@ def analyzeGitUrl(url, storeDir):
         placeDir = join(storeDir, lang)
         if not exists(placeDir):
             makedirs(placeDir)
-        return (lang, project, placeDir)
+        return (lang, developer, project, placeDir)
     else:
         print('Error: cannot extract language from its project page')
-        return (None, project, None)
+        return (None, developer, project, None)
 
-def getGitProject(url, dir):
+def combineGitSSHUrl(developer, project):
+    return 'git@github.com:' + developer + '/' + project + '.git'
+
+def combineGitHttpsUrl(developer, project):
+    return 'https://github.com/' + developer + '/' + project + '.git'
+
+def getGitProject(developer, project, dir):
+    ssh_url = combineGitSSHUrl(developer, project)
+
     cwd = os.getcwd()
     os.chdir(dir)
-    os.system('git clone ' + url)
+    os.system('git clone ' + ssh_url)
     os.chdir(cwd)
 
-def isProjectExist(url):
+def isProjectExist(developer, project):
+    ssh_url = combineGitSSHUrl(developer, project)
+    https_url = combineGitHttpsUrl(developer, project)
+
     db = connectDB()
     cs = db.cursor()
     sql = 'SELECT DISTINCT repo FROM regs'
@@ -48,7 +69,23 @@ def isProjectExist(url):
 
     res = cs.fetchall()
     for r in res:
-        if url == r[0]:
+        if ssh_url == r[0]:
+            return True
+        if https_url == r[0]:
             return True
 
     return False
+
+def extractRegexFromGitRepo(lang, developer, project, dir):
+    if isProjectExist(developer, project):
+        print(developer + '/' + project, 'already exists')
+    else:
+        langDir = join(dir, lang)
+        getGitProject(developer, project, langDir)
+        projDir = join(langDir, project)
+        modname = 'scripts.extractor.' + lang
+        mod = importlib.util.find_spec(modname)
+        if mod is None:
+            print(modname, 'is not exist')
+        else:
+            mod.searchFile(projDir)

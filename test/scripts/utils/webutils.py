@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import requests
 
 def requestPage(url, charset = False, max_trials = 5):
@@ -35,3 +36,24 @@ def requestPage(url, charset = False, max_trials = 5):
         return ''
     else:
         return page
+
+def queryGitHubRepos(key, tops = None, lang = None, sort = 'stars', order = 'desc'):
+    langOption = ''
+    if lang is not None:
+        langOption = '+language:' + lang
+    url = 'https://api.github.com/search/repositories?q=' + key + langOption + '&sort=' + sort + '&order=' + order
+    resp = requests.get(url)
+    res = json.loads(resp.text)
+    with open('tmp.json', 'w') as tf:
+        tf.write(json.dumps(res, indent = 2))
+
+    latestRepos = []
+    repos = res['items']
+    for repo in repos:
+        tmp = {
+            'lang': repo['language'],
+            'project': repo['name'],
+            'developer': repo['owner']['login']
+        }
+        latestRepos.append(tmp)
+    return latestRepos

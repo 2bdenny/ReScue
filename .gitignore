@@ -36,3 +36,4 @@ doc/
 test/PUTs
 db.json
 __pycache__/
+tmp*
