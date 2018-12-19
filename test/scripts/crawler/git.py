@@ -7,6 +7,7 @@ from os import makedirs
 from os.path import exists, join
 
 from scripts.utils.webutils import *
+from scripts.utils.extractutils import *
 
 def analyzeGitUrl(url, storeDir):
     res = re.search('.*github.com/(.*)/(.*)\.git', url)
@@ -39,4 +40,15 @@ def getGitProject(url, dir):
     os.system('git clone ' + url)
     os.chdir(cwd)
 
-# analyzeGitUrl(sys.argv[1], sys.argv[2])
+def isProjectExist(url):
+    db = connectDB()
+    cs = db.cursor()
+    sql = 'SELECT DISTINCT repo FROM regs'
+    cs.execute(sql)
+
+    res = cs.fetchall()
+    for r in res:
+        if url == r[0]:
+            return True
+
+    return False

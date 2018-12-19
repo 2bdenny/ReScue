@@ -62,8 +62,7 @@ def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, r
     os.chdir(cwd)
     return regs
 
-# store regs into db
-def storeRegs(regs):
+def connectDB():
     # read db info from file
     dbinfo = None
     with open('db.json', 'r') as dbf:
@@ -81,6 +80,12 @@ def storeRegs(regs):
         password = dbinfo['password'],
         database = dbinfo['database']
     )
+
+    return db
+
+# store regs into db
+def storeRegs(regs):
+    db = connectDB()
     cs = db.cursor()
 
     # insert into db

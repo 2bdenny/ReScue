@@ -26,8 +26,11 @@ if args.url is not None and args.url != "":
     # pass
     (lang, project, dir) = analyzeGitUrl(args.url, args.dir)
     print(lang, project, dir)
-    # getGitProject(args.url, dir)
+    if isProjectExist(args.url):
+        print(args.url, 'already exists')
+    else:
+        getGitProject(args.url, dir)
 
-    projDir = join(dir, project)
-    mod = importlib.import_module('scripts.extractor.' + lang)
-    mod.searchFile(projDir)
+        projDir = join(dir, project)
+        mod = importlib.import_module('scripts.extractor.' + lang)
+        mod.searchFile(projDir)
