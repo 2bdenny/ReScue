@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import importlib
 import os
 import sys
 import re
@@ -19,7 +20,7 @@ def analyzeGitUrl(url, storeDir):
         if project.endswith('.git'):
             project = project[:-4]
     elif url.startswith('git@'):
-        res = re.search(r'git@github\.com:([^/]*)/([^/])', url)
+        res = re.search(r'git@github\.com:([^/]*)/([^/]*)', url)
         developer = res.group(1)
         project = res.group(2)
         if project.endswith('.git'):
@@ -36,10 +37,9 @@ def analyzeGitUrl(url, storeDir):
         lang = res[0][0]
 
     if lang is not None:
-        placeDir = join(storeDir, lang)
-        if not exists(placeDir):
-            makedirs(placeDir)
-        return (lang, developer, project, placeDir)
+        if not exists(storeDir):
+            makedirs(storeDir)
+        return (lang, developer, project, storeDir)
     else:
         print('Error: cannot extract language from its project page')
         return (None, developer, project, None)
@@ -55,7 +55,10 @@ def getGitProject(developer, project, dir):
 
     cwd = os.getcwd()
     os.chdir(dir)
-    os.system('git clone ' + ssh_url)
+    if not exists(project):
+        os.system('git clone ' + ssh_url)
+    else:
+        print(project, 'already cloned')
     os.chdir(cwd)
 
 def isProjectExist(developer, project):
@@ -84,8 +87,9 @@ def extractRegexFromGitRepo(lang, developer, project, dir):
         getGitProject(developer, project, langDir)
         projDir = join(langDir, project)
         modname = 'scripts.extractor.' + lang
-        mod = importlib.util.find_spec(modname)
-        if mod is None:
+        modexist = importlib.util.find_spec(modname)
+        if modexist is None:
             print(modname, 'is not exist')
         else:
+            mod = importlib.import_module(modname)
             mod.searchFile(projDir)

@@ -16,8 +16,6 @@ import cn.edu.nju.moon.redos.Trace;
 //import cn.edu.nju.moon.redos.attackers.CollisionAttacker;
 import cn.edu.nju.moon.redos.attackers.GeneticAttacker;
 //import cn.edu.nju.moon.redos.attackers.RandomStringAttacker;
-//import cn.edu.nju.moon.redos.attackers.ga.Chromosome;
-//import cn.edu.nju.moon.redos.attackers.ga.Identity;
 import cn.edu.nju.moon.redos.regex.*;
 import cn.edu.nju.moon.redos.utils.NodeRelation;
 import cn.edu.nju.moon.redos.utils.RegexFormatter;
