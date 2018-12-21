@@ -54,6 +54,10 @@ def getGitProject(developer, project, dir):
     ssh_url = combineGitSSHUrl(developer, project)
 
     cwd = os.getcwd()
+
+    if not exists(dir):
+        makedirs(dir)
+    
     os.chdir(dir)
     if not exists(project):
         os.system('git clone ' + ssh_url)

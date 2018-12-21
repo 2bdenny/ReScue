@@ -12,6 +12,9 @@ from os.path import join
 from random import randint
 from scripts.crawler.git import *
 
+TODAY_MAX_COUNT = 5
+CURRENT_SUPPORT_LANG = ['Java', 'JavaScript', 'Python', 'PHP']
+
 def test(args):
     if args.url is not None and args.url != '':
         (lang, developer, project, dir) = analyzeGitUrl(args.url, args.dir)
@@ -24,7 +27,11 @@ def test(args):
         stopCount = 0
         for repo in repos:
             print('extracting', repo)
-            extractRegexFromGitRepo(repo['lang'], repo['developer'], repo['project'], args.dir)
+            if repo['lang'] in CURRENT_SUPPORT_LANG:
+                extractRegexFromGitRepo(repo['lang'], repo['developer'], repo['project'], args.dir)
+            else:
+                print('language', repo['lang'], 'is not supported now')
+                continue
 
             stopCount += 1
             time.sleep(randint(1, 5))
@@ -37,6 +44,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-url', type = str, default = '', help = 'Git repo url only')
 parser.add_argument('-key', type = str, default = '', help = 'Search key of git repo')
 parser.add_argument('-dir', type = str, default = './PUTs/', help = 'Store git repo in this dir')
+parser.add_argument('-clear', type = )
 args = parser.parse_args()
 
 test(args)

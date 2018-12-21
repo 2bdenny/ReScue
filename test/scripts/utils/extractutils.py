@@ -40,6 +40,10 @@ def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, r
             continue
         else:
             res = re.search(inforeg, line)
+            if res is None:
+                print(inforeg)
+                print(line)
+                continue
             print(res.groups())
 
             reg_file = res.group(file_group)
