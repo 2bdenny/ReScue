@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 ###
-### This file is under developing,
-### and it should be a controller of all scripts
+### This is under developing, and we only support extract regex from files
+### written in some languages
 ###
 import argparse
 import importlib
 import time
 
-
 from os.path import join
 from random import randint
 from scripts.crawler.git import *
 
+# Maximum extract project numbers once
 TODAY_MAX_COUNT = 5
 CURRENT_SUPPORT_LANG = ['Java', 'JavaScript', 'Python', 'PHP']
 
@@ -33,6 +33,7 @@ def test(args):
                 print('language', repo['lang'], 'is not supported now')
                 continue
 
+            # For not be banned by GitHub
             stopCount += 1
             time.sleep(randint(1, 5))
             if stopCount == TODAY_MAX_COUNT:
@@ -48,4 +49,3 @@ parser.add_argument('-clear', type = )
 args = parser.parse_args()
 
 test(args)
-# queryGitHubRepos('search')
