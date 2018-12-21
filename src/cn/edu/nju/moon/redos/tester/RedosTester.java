@@ -23,6 +23,11 @@ import cn.edu.nju.moon.redos.attackers.GeneticAttacker;
 //import cn.edu.nju.moon.redos.attackers.GeneticAttackerWithoutSeeding;
 import cn.edu.nju.moon.redos.regex.ReScuePattern;
 import cn.edu.nju.moon.redos.utils.RegexFormatter;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 @RunWith(Parameterized.class)
 public class RedosTester {
@@ -59,7 +64,23 @@ public class RedosTester {
 		"\tor combine with other options"
 	};
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
+		ArgumentParser parser = ArgumentParsers.newFor("ReScue").build();
+		parser.defaultHelp(true);
+		parser.description("ReScue is a tool to auto detect ReDoS vulnerabilities in regexes.");
+		
+		parser.addArgument("-ut", "--unittest").action(Arguments.storeFalse()).help("Start unittest.");
+		
+		Namespace ns = null;
+		try {
+			ns = parser.parseArgs(args);
+		} catch (ArgumentParserException e1) {
+			e1.printStackTrace();
+			System.exit(1);
+		}
+		
+		MessageDigest digest = null;
+		
 		if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
 			JUnitCore junit = new JUnitCore();
 			junit.run(RedosTester.class);

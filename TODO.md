@@ -1,0 +1,2 @@
+- argparse like python
+- GUI
