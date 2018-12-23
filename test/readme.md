@@ -38,5 +38,6 @@ Line-Number : Validate-Result : Tool-Report-Result : Tool-Analyze-Time : The-Reg
 ```
 Our experiment result is collected from such result files by a python script.
 
-# Assistant Tools
-- The regex extractor: `python tester.py -url [Git Repo URL]`
+# Evaluation Tools
+- The regex extractor: `python regcrawler.py`
+- The 

@@ -45,7 +45,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-url', type = str, default = '', help = 'Git repo url only')
 parser.add_argument('-key', type = str, default = '', help = 'Search key of git repo')
 parser.add_argument('-dir', type = str, default = './PUTs/', help = 'Store git repo in this dir')
-parser.add_argument('-clear', type = )
-args = parser.parse_args()
+# parser.add_argument('-clear', type = )
 
-test(args)
+if len(sys.argv) == 1:
+    parser.print_help()
+else:
+    args = parser.parse_args()
+    test(args)
