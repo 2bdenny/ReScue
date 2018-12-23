@@ -51,7 +51,11 @@ def attack(attacker, regexes):
 
     print(whole_atk_path)
     print(whole_reg_path)
-    print(whole_log_path)
+    print('------')
+    print('Current regex file:', regexes)
+    print('Current log dir:', whole_log_path)
+    print('The collect script take these two arguments as inputs.')
+    print('------')
 
     regs = None
     with open(whole_reg_path) as f:
@@ -70,10 +74,10 @@ def attack(attacker, regexes):
     elapsed_time = time.time() - start_time
     print('Elapsed ' + str(elapsed_time) + " seconds.")
 
-# If input arguments are correct
-if (len(sys.argv) == 3):
-    attack(sys.argv[1], sys.argv[2])
-# If error
-else:
-    print('Please check your attacker name or regex file name.')
-    print('Expect: python attack.py ReScue.jar test_format.txt')
+# # If input arguments are correct
+# if (len(sys.argv) == 3):
+#     attack(sys.argv[1], sys.argv[2])
+# # If error
+# else:
+#     print('Please check your attacker name or regex file name.')
+#     print('Expect: python attack.py ReScue.jar test_format.txt')

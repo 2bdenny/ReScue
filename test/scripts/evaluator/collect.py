@@ -184,9 +184,9 @@ def collect(logDir, regexes):
 def print_help():
     print('Input error, expect: python collect.py logDir test.txt')
 
-if (len(sys.argv) == 2):
-    collect(sys.argv[1])
-elif (len(sys.argv) == 3):
-    collect(sys.argv[1], sys.argv[2])
-else:
-    print_help()
+# if (len(sys.argv) == 2):
+#     collect(sys.argv[1])
+# elif (len(sys.argv) == 3):
+#     collect(sys.argv[1], sys.argv[2])
+# else:
+#     print_help()
