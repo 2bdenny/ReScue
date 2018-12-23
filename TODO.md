@@ -1,2 +1,2 @@
-- argparse like python
-- GUI
+- <del>argparse like python</del>
+- java-GUI
