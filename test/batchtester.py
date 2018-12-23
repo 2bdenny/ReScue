@@ -4,6 +4,7 @@ import sys
 
 from scripts.evaluator.attack import attack
 from scripts.evaluator.collect import collect
+from scripts.utils.extractutils import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-atk', '--attacker', type = str, default = 'ReScue.jar', help = 'The binary attacker (It should be put in the release/ directory).', required = False)
@@ -13,6 +14,8 @@ parser.add_argument('-logDir', type = str, default = '', help = 'The log directo
 parser.add_argument('-a', '--attack', default = False, action = 'store_true', help = 'Current operation is attack.')
 parser.add_argument('-c', '--collect', default = False, action = 'store_true', help = 'Current operation is collect.')
 
+parser.add_argument('-dump', default = False, action = 'store_true', help = 'Dump regs in DB.')
+
 def test(args):
     if args.attack:
         attack(args.attacker, args.regexes)
@@ -21,6 +24,8 @@ def test(args):
             print('Error: logDir not set.')
             return
         collect(args.logDir, args.regexes)
+    if args.dump:
+        dumpRegs()
 
 if len(sys.argv) == 1:
     parser.print_help()

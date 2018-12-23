@@ -6,6 +6,8 @@ import os
 import re
 import sys
 
+from datetime import datetime
+from os.path import join
 from subprocess import check_output
 
 # git latest commit hash
@@ -100,3 +102,24 @@ def storeRegs(regs):
     db.commit()
 
     print(len(regs), "regex stored")
+
+# dump regs from db to file
+def dumpRegs():
+    db = connectDB()
+    cs = db.cursor()
+    cs.execute('select * from regs')
+    row_headers = [x[0] for x in cs.description]
+    rs = cs.fetchall()
+
+    jrs = []
+    for row in rs:
+        jrs.append(dict(zip(row_headers, row)))
+
+    jsonFile = join('./data', str(int(datetime.today().timestamp() * 1000)) + '.json')
+    regFile = join('./data', str(int(datetime.today().timestamp() * 1000)) + '.txt')
+    with open(jsonFile, 'w') as jf:
+        json.dump(jrs, jf)
+    with open(regFile, 'w') as rf:
+        for r in jrs:
+            rf.write(r['reg'] + '\n')
+    print(len(jrs), 'regs are dumped to', jsonFile, 'and', regFile)

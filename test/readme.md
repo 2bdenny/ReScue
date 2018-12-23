@@ -39,5 +39,6 @@ Line-Number : Validate-Result : Tool-Report-Result : Tool-Analyze-Time : The-Reg
 Our experiment result is collected from such result files by a python script.
 
 # Evaluation Tools
+- `cd test`
 - The regex extractor: `python regcrawler.py`
-- The 
+- The batch evaluator: `python batchtester.py`
