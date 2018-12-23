@@ -2,6 +2,7 @@
 > ReScue is under testing & debugging now.
 
 ## Using ReScue
+### Simple use
 Download the zip, decompress it, then:
 ```
 cd release/
@@ -28,6 +29,37 @@ Attack success, attack string is:
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
+### Batch test
+Download the zip, decompress it, then:
+1. Put your regexes in one file, like `my_regexes.txt`, a regex per line
+2. Put the file in `test/data/`
+3. Find manul of how to run the test script:
+```
+cd test/
+python batchtester.py
+```
+4. Or just run the test:
+```
+python batchtester.py -a -reg my_regexes.txt
+```
+5. Wait a lot of time, and be careful about your CPU, monitor it by `htop` or something else
+6. Auto collect the evaluation result:
+```
+python batchtester.py -c -logDir ./test/logs/ReScue.jar/my_regexes.txt/<digits>/
+```
+7. You will get some report like this:
+```
+Attack Summary
+First Success: 0
+Real Success: 0
+Failed: 22
+	Pumping: 0; Timeout: 0; Normal: 22; Init: 0; Cross: 0; Select: 0
+Unparsable: 3
+Total: 25
+Node Coverage: init/ga/total 179/179/194
+```
+8. And you can find the attack strings in the `logDir`
+
 ## Directory
 ```
 ReScue
@@ -42,15 +74,16 @@ ReScue
 │     │  │  └─selectors
 │     │  └─pp
 │     ├─regex
-│     ├─tester	# Main classes are here
+│     ├─tester	# Look at the MyTester.java, you can add your own tester here
 │     └─utils
 └─test
 	├─data				# Put regexes txt files here
-	└─scripts
-		└─extractor	# Scripts to extract regexes from projects' source
+	└─scripts			# Some scripts used for evaluation
 ```
 
 ## Dependencies
+### Dependencies can be installed by maven automatically now, I love maven!
+### Following is the deprecated dependencies intro
 1. JDK 1.8 and Python3
 2. The prefuse visualization toolkit: [prefuse.jar](http://prefuse.org/)
 3. [junit-4.12.jar](http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar)
