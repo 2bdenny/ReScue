@@ -32,104 +32,61 @@ import net.sourceforge.argparse4j.inf.Namespace;
 @RunWith(Parameterized.class)
 public class RedosTester {
 	private RedosAttacker attacker;
-	private static final String[] usage = {"Usage:",
-		"java -jar rescue.jar -h",
-		"\tShow this text.",
-		"",
-		"java -jar ReScue.jar <-sl string length> <-pz population size> <-g generations>", 
-		"\t\t\t\t\t<-cp crossover probability> <-mp mutation probability>",
-		"\t\t\t\t\t<-q> <-v>",
-		"\tAttack the <regex> with the <attacker>",
-		"\tby default(sl is 128, pz is 200, g is 200, cp is 10(0.1), mp is 10(0.1)):",
-		"\t\tjava -jar ReScue.jar",
-		"\tor:",
-		"\t\tjava -jar ReScue.jar -sl 128 -pz 200 -g 200 -cp 10 -mp 10",
-		"",
-		"-sl\tLimit the string length",
-		"",
-		"-pz\tLimit the population size",
-		"",
-		"-g\tLimit the generation",
-		"",
-		"-cp\tSet the crossover possiblity, the real possibility is calculated by cp / 100.0",
-		"",
-		"-mp\tSet the mutation possibility, the real possibility is calculated by mp / 100.0",
-		"",
-		"-v\tView the inner structure of a regex, usage:",
-		"\tjava -jar ReScue.jar -v",
-		"\tor combine with other options",
-		"",
-		"-q\tQuiet mode, do not show input message, usage:",
-		"\tjava -jar ReScue.jar -q",
-		"\tor combine with other options"
-	};
 	
 	public static void main(String[] args) {
 		ArgumentParser parser = ArgumentParsers.newFor("ReScue").build();
 		parser.defaultHelp(true);
 		parser.description("ReScue is a tool to auto detect ReDoS vulnerabilities in regexes.");
+		parser.addArgument("-q", "--quiet").action(Arguments.storeTrue()).help("Quiet mode, hide input tips.");
+		parser.addArgument("-ut", "--unittest").action(Arguments.storeTrue()).help("Start unittest.");
+		parser.addArgument("-v", "--visual").action(Arguments.storeTrue()).help("Show e-NFA of the input regex.");
+		parser.addArgument("-ml", "--maxLength").setDefault(128).help("Maximum string length.");
+		parser.addArgument("-pz", "--popSize").setDefault(200).help("Maximum population size.");
+		parser.addArgument("-g", "--generation").setDefault(200).help("Maximum generations.");
+		parser.addArgument("-cp", "--crossPossibility").setDefault("10").help("The crossover possibility, default is 10, means 10%.");
+		parser.addArgument("-mp", "--mutatePossibility").setDefault("10").help("The mutation possibility, default is 10, means 10%.");
 		
-		parser.addArgument("-ut", "--unittest").action(Arguments.storeFalse()).help("Start unittest.");
-		
+		if (args.length == 0) {
+			parser.printHelp();
+			return ;
+		}
 		Namespace ns = null;
 		try {
 			ns = parser.parseArgs(args);
+			System.out.println(ns.getBoolean("unittest"));
 		} catch (ArgumentParserException e1) {
 			e1.printStackTrace();
-			System.exit(1);
+			System.exit(-1);
 		}
 		
-		MessageDigest digest = null;
-		
-		if (args.length == 1 && args[0].equalsIgnoreCase("test")) {
+		if (ns.getBoolean("unittest")) {
 			JUnitCore junit = new JUnitCore();
 			junit.run(RedosTester.class);
-		} else {			
-			// -h (--help)
-			if (args.length == 1 && args[0].equalsIgnoreCase("-h")) {
-				if (usage != null) {
-					for (String u : usage) System.out.println(u);
-				}
-			} else if (args.length == 1 && (args[0].equalsIgnoreCase("-v") || args[0].equalsIgnoreCase("--visual"))){
+		} else {
+			if (ns.getBoolean("visual")){
 				TempTester.testView();
 			} else {
 				long start_time = System.nanoTime();
-				int sl = 64;
+				// These values are used for test
+				int sl = 64; // The deprecated seed length
 				int ml = 128;
 				int pz = 200;
 				int g = 200;
 				int mp = 10;
 				int cp = 5;
-				boolean quiet = false; // Whether print tip
-				boolean vision = false; // Whether show diagram
-				for (int i = 0; i < args.length; i ++) {
-//					System.out.println(args[i]);
-					if (args[i].equalsIgnoreCase("-sl")) {
-						sl = Integer.parseInt(args[i+1]);
-						i ++;
-					} else if (args[i].equalsIgnoreCase("-ml")) {
-						ml = Integer.parseInt(args[i+1]);
-						i ++;
-					} else if (args[i].equalsIgnoreCase("-pz")) {
-						pz = Integer.parseInt(args[i+1]);
-						i ++;
-					} else if (args[i].equalsIgnoreCase("-g")) {
-						g = Integer.parseInt(args[i+1]);
-						i ++;
-					} else if (args[i].equalsIgnoreCase("-q")) {
-						quiet = true;
-					} else if (args[i].equalsIgnoreCase("-cp")) {
-						cp = Integer.parseInt(args[i+1]);
-						i++;
-					} else if (args[i].equalsIgnoreCase("-v")) {
-						vision = true;
-					} else if (args[i].equalsIgnoreCase("-mp")) {
-						mp = Integer.parseInt(args[i+1]);
-						i++;
-					} else break;
-				}
+				
+				// Read input arguments
+				boolean quiet = ns.getBoolean("quiet");
+				boolean vision = ns.getBoolean("visual");
+				sl = ns.getInt("maxLength");
+				ml = ns.getInt("maxLength");
+				pz = ns.getInt("popSize");
+				g = ns.getInt("generation");
+				cp = ns.getInt("crossPossibility");
+				mp = ns.getInt("mutatePossibility");
 				
 				if (!quiet) System.out.print("Input regex: ");
+				
 				Scanner input = new Scanner(System.in);
 				String regex = input.hasNextLine() ? input.nextLine() : null;
 				input.close();
