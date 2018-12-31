@@ -119,6 +119,7 @@ public class RedosTester {
 			if (trace != null && trace.attackSuccess()) {
 				long elapsed_time = System.nanoTime() - start_time;
 				System.out.println("TIME: " + ((double)elapsed_time / 1e9) + " (s)");
+			  System.out.println("Got 'em: <" + trace.getAttackPrefix() + "> <" + trace.getAttackPump() + " > <" + trace.getAttackSuffix() + ">");
 				System.out.println("Attack success, attack string is:");
 				System.out.println(trace.str);
 			} else {

@@ -56,7 +56,7 @@ public class GeneticAttacker extends RedosAttacker {
 	}	
 
 	@Override
-	public Trace attack(ReScuePattern jdkPattern) {		
+	public Trace attack(ReScuePattern jdkPattern) {
 		// Initiate variables
 		pattern = jdkPattern;
 		slices = pattern.getAllSlices();
@@ -136,6 +136,7 @@ public class GeneticAttacker extends RedosAttacker {
 		// Must return a trace unless init population error
 		if (slowest != null && slowest.attackSuccess()) {			
 			slowest = pumper.reRepeat(pattern, slowest);
+			System.out.println("Got 'em: <" + slowest.getAttackPrefix() + "> <" + slowest.getAttackPump() + " > <" + slowest.getAttackSuffix() + ">");
 		} else System.out.println("Normal fail");
 		
 		return slowest;

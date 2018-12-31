@@ -23,7 +23,12 @@ public class Trace{
 	private int logHash;
 	private int logSize;
 	private int finishIndex; // The index of effective string's end
-	
+
+	// prefix + pump * N_PUMPS + suffix
+	public String prefix;
+	public String pump;
+	public String suffix;
+
 	private int[] eachStep;
 	private boolean isDetail = false;
 	private List<Node> logNode; // The path of match process
@@ -150,7 +155,38 @@ public class Trace{
 		if (this.str == null) this.str = new String(input);
 		this.effectiveStr = str.substring(0, finishIndex);
 	}
-	
+
+	/**
+	 * Store the attack string components
+	 * @param input
+	 */
+	public void setAttackString(String prefix, String pump, String suffix) {
+		this.prefix = prefix;
+		this.pump = pump;
+		this.suffix = suffix;
+	}
+
+	/**
+	 * Get the attack string components: prefix
+	 */
+	public String getAttackPrefix() {
+		return this.prefix;
+	}
+
+	/**
+	 * Get the attack string components: pump
+	 */
+	public String getAttackPump() {
+		return this.pump;
+	}
+
+	/**
+	 * Get the attack string components: suffix
+	 */
+	public String getAttackSuffix() {
+		return this.suffix;
+	}
+
 	/**
 	 * Is the string too long? (compared with {@GeneticAttacker}.MAX_STR_LEN})
 	 * @return
