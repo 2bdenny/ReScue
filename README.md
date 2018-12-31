@@ -60,10 +60,9 @@ Node Coverage: init/ga/total 179/179/194
 ```
 8. And you can find the attack strings in the `logDir`
 
-## Directory
+## Directory structure
 ```
-ReScue
-├─jars 		# Put dependencies here (prefuse.jar, etc.)
+  ReScue
 ├─release	# ReScue.jar
 ├─src/cn/edu/nju/moon/redos/
 │     ├─attackers
@@ -76,19 +75,16 @@ ReScue
 │     ├─regex
 │     ├─tester	# Look at the MyTester.java, you can add your own tester here
 │     └─utils
+│     └─gui     # TODO What is this?
 └─test
-	├─data				# Put regexes txt files here
 	└─scripts			# Some scripts used for evaluation
 ```
 
-## Dependencies
-### Dependencies can be installed by maven automatically now, I love maven!
-### Following is the deprecated dependencies intro
-1. JDK 1.8 and Python3
-2. The prefuse visualization toolkit: [prefuse.jar](http://prefuse.org/)
-3. [junit-4.12.jar](http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar)
-4. [hamcrest-core-1.3.jar](http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar)
-5. [commons-lang-2.6.jar](http://mirrors.hust.edu.cn/apache//commons/lang/binaries/commons-lang-2.6-bin.tar.gz)
+## Building
+
+This project uses Apache Maven.
+- Run `mvn clean compile` to build it.
+- There is a Maven guide available [here](https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html).
 
 ## Confirmed ReDoS vulnerabilities
 1. https://github.com/nhnent/tui.editor/issues/141
@@ -100,9 +96,3 @@ ReScue
 1. https://github.com/metabase/metabase/issues/7354
 2. https://github.com/prose/prose/issues/1071
 3. https://github.com/adobe/brackets/issues/14154
-
-## Document Build Instructions
-0. This is a *temporary solution*
-1. The main class for ReScue is located in `cn.edu.nju.moon.redos.tester.RedosTester.java`
-2. To build the `jar` file, create a `java project` in `Eclipse` on directory `ReScue` and use `File - Export-Runnable JAR File - Launch configuration: RedosTester` to generate it
-3. **Do not forget to import dependencies in `Java Build Path`**
