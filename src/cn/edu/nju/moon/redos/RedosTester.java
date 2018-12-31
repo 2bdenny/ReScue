@@ -13,6 +13,7 @@ import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
+import com.google.gson.Gson; // For --regexFile
 
 public class RedosTester {
 	protected RedosAttacker atk;
@@ -34,6 +35,7 @@ public class RedosTester {
 		parser.description("ReScue is a tool to auto detect ReDoS vulnerabilities in regexes. (noSeeding, noIncubating and noPumping are mutex arguments, and only used for testing)");
 		parser.addArgument("-q", "--quiet").action(Arguments.storeTrue()).help("Quiet mode, hide input tips.");
 		parser.addArgument("-v", "--visual").action(Arguments.storeTrue()).help("Show e-NFA of the input regex.");
+		parser.addArgument("-f", "--regexFile").setDefault("NONE").help("File containing JSON object with key: regex");
 		parser.addArgument("-ml", "--maxLength").setDefault(128).help("Maximum string length.");
 		parser.addArgument("-pz", "--popSize").setDefault(200).help("Maximum population size.");
 		parser.addArgument("-g", "--generation").setDefault(200).help("Maximum generations.");
@@ -68,6 +70,7 @@ public class RedosTester {
 			int g = 200;
 			int mp = 10;
 			int cp = 5;
+			String rf = "NONE";
 			
 			// Read input arguments
 			boolean quiet = ns.getBoolean("quiet");
@@ -77,13 +80,9 @@ public class RedosTester {
 			g = ns.getInt("generation");
 			cp = ns.getInt("crossPossibility");
 			mp = ns.getInt("mutatePossibility");
-			
-			if (!quiet) System.out.print("Input regex: ");
-			
-			Scanner input = new Scanner(System.in);
-			String regex = input.hasNextLine() ? input.nextLine() : null;
-			input.close();
-			
+			rf = ns.getString("regexFile");
+
+			String regex = getRegex(rf, quiet);
 			if (regex == null || regex.length() < 1) {
 				System.out.println("Please check your regex.");
 				return ;
@@ -134,4 +133,20 @@ public class RedosTester {
 			System.out.println("Regex compile error");
 		}
 	}
+
+  private static String getRegex(String regexFile, boolean quiet) {
+    String regex = null;
+    if (regexFile == null || regexFile == "NONE") {
+      // No regexFile, get it from prompt
+      if (!quiet) System.out.print("Input regex: ");
+
+      Scanner input = new Scanner(System.in);
+      regex = input.hasNextLine() ? input.nextLine() : null;
+      input.close();
+    } else {
+      // regexFile: load, parse, extract
+      // TODO
+    }
+    return regex;
+  }
 }
