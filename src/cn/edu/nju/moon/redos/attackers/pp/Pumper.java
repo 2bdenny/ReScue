@@ -22,15 +22,14 @@ public class Pumper {
     */
     public Trace reRepeat(ReScuePattern p, Trace t) {
     	String reg = p.pattern();
-//    	String atk = t.str;
-    	System.out.println("Vulnerable: " + t.str);
+    	System.err.println("reRepeat: un-trimmed trace string: " + t.str);
     	
     	// Init
     	ReScuePattern vp = ReScuePattern.compile(reg);
     	ReScueMatcher vm = null;
     	int efi = 0, efj = 0;
     	double maxScore = t.score(null);
-    	System.out.println(t.getMatchSteps() + " : " + t.score(null) + " : " + t.str);
+    	System.err.println(t.getMatchSteps() + " : " + t.score(null) + " : " + t.str);
     	
     	// Trimming
     	Trace fstResult = t;
@@ -49,7 +48,7 @@ public class Pumper {
 			}
     	}
     	t = fstResult;
-    	System.out.println(t.getMatchSteps() + " : " + t.score(null) + " : " + t.str);
+    	System.err.println("Trimmed attack string: " + t.getMatchSteps() + " steps (score " + t.score(null) + ")\n  " + t.str);
     	
     	// Find the most effective sub-string by double-loop (1e6)
     	boolean found = false;
@@ -69,6 +68,7 @@ public class Pumper {
     				efi = j;
     				efj = j + i;
     				if (tp.attackSuccess()) {
+              System.err.println("Found most effective sub-string by double-loop");
     					t = tp;
     					t.setAttackString(prefix, repeat, suffix);
     					found = true;
@@ -78,42 +78,44 @@ public class Pumper {
     		}
     		if (found) break;
     	}
-    	System.out.println(t.getMatchSteps() + " : " + t.str);
+    	System.err.println(t.getMatchSteps() + " : " + t.str);
     	
     	int nPumps = 0;
     	// If double-repeating cannot pass the Second Judge, then repeat MAX_LEN times
       // JD: TODO Not sure what the "Second Judge" is.
       //     It looks like we are pumping the effective substring found in the preceding double-loop?
-    	if (efj > 0) {
-    		String prefix = t.str.substring(0, efi);
-    		String suffix = t.str.substring(efi);
-    		
-    		int cur_len = prefix.length() + suffix.length();
-    		
-    		String pumpKernel = t.str.substring(efi, efj);
-    		String repeatedPump = "";
-    		if (pumpKernel.length() > 0) {
+      if (efj > 0) {
+        String prefix = t.str.substring(0, efi);
+        String suffix = t.str.substring(efi);
+
+        int cur_len = prefix.length() + suffix.length();
+
+        String pumpKernel = t.str.substring(efi, efj);
+        String repeatedPump = "";
+        if (pumpKernel.length() > 0) {
           // Pump until adding another would exceed MAX_LEN
-	    		while (cur_len + pumpKernel.length() <= MAX_LEN) {
-	    			repeatedPump += pumpKernel;
-	    			cur_len = prefix.length() + repeatedPump.length() + suffix.length();
-	    			nPumps++;
-	    		}
-    		}
-    		String attackString = prefix + repeatedPump + suffix;
-    		vm = vp.matcher(attackString, new Trace(RedosAttacker.SECOND_THRESHOLD));
-			Trace tp = vm.find();
-			if (tp.attackSuccess()) {
-				t = tp;
-				t.setAttackString(prefix, pumpKernel, suffix);
-			}
-    	}
-    	System.out.println(t.getMatchSteps() + " : " + nPumps + " : " + t.str);
+          while (cur_len + pumpKernel.length() <= MAX_LEN) {
+            repeatedPump += pumpKernel;
+            cur_len = prefix.length() + repeatedPump.length() + suffix.length();
+            nPumps++;
+          }
+        }
+        String attackString = prefix + repeatedPump + suffix;
+        vm = vp.matcher(attackString, new Trace(RedosAttacker.SECOND_THRESHOLD));
+        Trace tp = vm.find();
+        if (tp.attackSuccess()) {
+          System.err.println("Found effective attack string by many-pump\n  prefix " + prefix + " pump " + pumpKernel + " suffix " + suffix + "\n  attackString: " + attackString);
+          t = tp;
+          t.setAttackString(prefix, pumpKernel, suffix);
+        }
+      }
+    	System.err.println(t.getMatchSteps() + " : " + nPumps + " : " + t.str);
 
     	// Can we really attack ? (1e8)
     	vm = vp.matcher(t.str, new Trace(RedosAttacker.SUCCESS_THRESHOLD));
-    	t = vm.find();
-    	System.out.println(t.getMatchSteps() + " : " + t.str);
-    	return t;
+    	Trace final_t = vm.find();
+      final_t.setAttackString(t.getAttackPrefix(), t.getAttackPump(), t.getAttackSuffix());
+    	System.err.println("Attempted attack: " + t.getMatchSteps() + " steps : " + t.str);
+    	return final_t;
     }
 }

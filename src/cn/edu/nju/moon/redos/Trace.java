@@ -133,7 +133,7 @@ public class Trace{
 	
 	public void printStep() {
 		for (int i = 0; i < this.str.length(); i++) {
-			System.out.println(i + ": " + this.str.charAt(i) + ": " + this.eachStep[i]);
+			System.err.println(i + ": " + this.str.charAt(i) + ": " + this.eachStep[i]);
 		}
 	}
 	
@@ -161,6 +161,7 @@ public class Trace{
 	 * @param input
 	 */
 	public void setAttackString(String prefix, String pump, String suffix) {
+    System.err.println("Trace: prefix <" + prefix + ">, pump <" + pump + ">, suffix <" + suffix + ">");
 		this.prefix = prefix;
 		this.pump = pump;
 		this.suffix = suffix;
