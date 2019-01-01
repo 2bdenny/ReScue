@@ -35,20 +35,21 @@ public class RedosTester {
 		parser.description("ReScue is a tool to auto detect ReDoS vulnerabilities in regexes. (noSeeding, noIncubating and noPumping are mutex arguments, and only used for testing)");
 		parser.addArgument("-q", "--quiet").action(Arguments.storeTrue()).help("Quiet mode, hide input tips.");
 		parser.addArgument("-v", "--visual").action(Arguments.storeTrue()).help("Show e-NFA of the input regex.");
-		parser.addArgument("-f", "--regexFile").setDefault("NONE").help("File containing JSON object with key: regex");
-		parser.addArgument("-ml", "--maxLength").setDefault(128).help("Maximum string length.");
-		parser.addArgument("-pz", "--popSize").setDefault(200).help("Maximum population size.");
-		parser.addArgument("-g", "--generation").setDefault(200).help("Maximum generations.");
-		parser.addArgument("-cp", "--crossPossibility").setDefault("10").help("The crossover possibility, default is 10, means 10%.");
-		parser.addArgument("-mp", "--mutatePossibility").setDefault("10").help("The mutation possibility, default is 10, means 10%.");
+		parser.addArgument("-f", "--regexFile").type(String.class).setDefault("NONE").help("File containing JSON object with key: regex");
+		parser.addArgument("-ml", "--maxLength").type(Integer.class).setDefault(128).help("Maximum string length.");
+		parser.addArgument("-pz", "--popSize").type(Integer.class).setDefault(200).help("Maximum population size.");
+		parser.addArgument("-g", "--generation").type(Integer.class).setDefault(200).help("Maximum generations.");
+		parser.addArgument("-cp", "--crossPossibility").type(Integer.class).setDefault(10).help("The crossover possibility, default is 10, means 10%.");
+		parser.addArgument("-mp", "--mutatePossibility").type(Integer.class).setDefault(10).help("The mutation possibility, default is 10, means 10%.");
 		
 		parser.addArgument("-ns", "--noSeeding").action(Arguments.storeTrue()).help("No seeding version of ReScue, only used for evaluation & testing.");
 		parser.addArgument("-ni", "--noIncubating").action(Arguments.storeTrue()).help("No incubating version of ReScue, only used for evaluation & testing.");
 		parser.addArgument("-np", "--noPumping").action(Arguments.storeTrue()).help("No pumping version of ReScue, only used for evaluation & testing.");
 		
+    // TODO: "{ --interactive | --regexFile F }"
 		if (args.length == 0) {
 			parser.printHelp();
-			return ;
+			return;
 		}
 		
 		Namespace ns = null;
@@ -85,7 +86,7 @@ public class RedosTester {
 			String regex = getRegex(rf, quiet);
 			if (regex == null || regex.length() < 1) {
 				System.out.println("Please check your regex.");
-				return ;
+				return;
 			}
 			
 			RedosAttacker atk = null;
