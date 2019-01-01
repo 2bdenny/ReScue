@@ -56,7 +56,7 @@ public class GeneticAttacker extends RedosAttacker {
 	}	
 
 	@Override
-	public Trace attack(ReScuePattern jdkPattern) {		
+	public Trace attack(ReScuePattern jdkPattern) {
 		// Initiate variables
 		pattern = jdkPattern;
 		slices = pattern.getAllSlices();
@@ -76,16 +76,16 @@ public class GeneticAttacker extends RedosAttacker {
 		// Init population
 		int init_result = initiator.initiate(pop, jdkPattern, slices, prefixes);
 		pop.print();
-		System.out.println("===Initiate End===");
-		System.out.println("Node Coverage: " + pop.coverage() + "/" + pattern.getAllNodes().size());
+		System.err.println("===Initiate End===");
+		System.err.println("Node Coverage: " + pop.coverage() + "/" + pattern.getAllNodes().size());
 		
 		// Init state check
 		if (init_result == Initiator.INIT_ATTACK_FOUND) {
-			System.out.println("find attack string when init");
+			System.err.println("find attack string when init");
 			slowest = pop.get(pop.size() - 1);
 			attack_finish = true;
 		} else if (init_result == Initiator.INIT_FAILED) {
-			System.out.println("failed when init");
+			System.err.println("failed when init");
 			attack_finish = true;
 		}
 		
@@ -98,10 +98,10 @@ public class GeneticAttacker extends RedosAttacker {
 				// crossover
 				int crossRes = crossover.cross(pop, pattern);
 				if (crossRes == Crossover.CROSS_FAILED) {
-					System.out.println("failed when cross");
+					System.err.println("failed when cross");
 					break;
 				} else if (crossRes == Crossover.CROSS_ATTACK_FOUND) {
-					System.out.println("find attack string when cross");
+					System.err.println("find attack string when cross");
 					slowest = pop.get(pop.size()-1);
 					break;
 				}
@@ -109,10 +109,10 @@ public class GeneticAttacker extends RedosAttacker {
 				// mutate
 				int mutateRes = mutator.mutate(pop, pattern, slices);
 				if (mutateRes == Mutator.MUTATE_FAILED) {
-					System.out.println("failed when mutate");
+					System.err.println("failed when mutate");
 					break;
 				} else if (mutateRes == Mutator.MUTATE_ATTACK_FOUND) {
-					System.out.println("find attack string when mutate");
+					System.err.println("find attack string when mutate");
 					slowest = pop.get(pop.size()-1);
 					break;
 				}
@@ -122,8 +122,8 @@ public class GeneticAttacker extends RedosAttacker {
 		}
 		
 		// Output node coverage of the regex (state coverage of the automata)
-		System.out.println("===Genetic Algorithm End===");
-		System.out.println("Node Coverage: " + pop.coverage() + "/" + pattern.getAllNodes().size());
+		System.err.println("===Genetic Algorithm End===");
+		System.err.println("Node Coverage: " + pop.coverage() + "/" + pattern.getAllNodes().size());
 		
 		// If attack failed: find the max-score trace as the result
 		if (slowest == null) {
@@ -136,7 +136,8 @@ public class GeneticAttacker extends RedosAttacker {
 		// Must return a trace unless init population error
 		if (slowest != null && slowest.attackSuccess()) {			
 			slowest = pumper.reRepeat(pattern, slowest);
-		} else System.out.println("Normal fail");
+			System.err.println("Got 'em: <" + slowest.getAttackPrefix() + "> <" + slowest.getAttackPump() + "> <" + slowest.getAttackSuffix() + ">");
+		} else System.err.println("Normal fail");
 		
 		return slowest;
 	}
