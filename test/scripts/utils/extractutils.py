@@ -8,7 +8,7 @@ import sys
 
 from datetime import datetime
 from os.path import join
-from subprocess import check_output
+from subprocess import check_output, CalledProcessError
 
 # git latest commit hash
 def getLatestCommitHash():
@@ -35,35 +35,46 @@ def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, r
     git_repo = getGitRepo()
 
     regs = []
-    output = check_output(grepreg, shell = True)
-    lines = output.decode('utf8').split('\n')
-    for line in lines:
-        if len(line) == 0:
-            continue
+    output = None
+    try:
+        output = check_output(grepreg, shell = True)
+    except CalledProcessError as e:
+        if e.returncode == 1:
+            print('None match find')
+            output = None
         else:
-            res = re.search(inforeg, line)
-            if res is None:
-                print(inforeg)
-                print(line)
+            print(e)
+            output = None
+
+    if output is not None and output != '':
+        lines = output.decode('utf8').split('\n')
+        for line in lines:
+            if len(line) == 0:
                 continue
-            print(res.groups())
+            else:
+                res = re.search(inforeg, line)
+                if res is None:
+                    print(inforeg)
+                    print(line)
+                    continue
+                print(res.groups())
 
-            reg_file = res.group(file_group)
-            reg_lineno = res.group(lineno_group)
-            reg_raw = res.group(raw_group)
+                reg_file = res.group(file_group)
+                reg_lineno = res.group(lineno_group)
+                reg_raw = res.group(raw_group)
 
-            reg_hash = hashlib.md5(reg_raw.encode('utf8')).hexdigest()
+                reg_hash = hashlib.md5(reg_raw.encode('utf8')).hexdigest()
 
-            reg = {
-                'file': reg_file,
-                'lineno': reg_lineno,
-                'reg': reg_raw,
-                'reg_hash': reg_hash,
-                'git_commit': latest_git_log_hash,
-                'pl': lang,
-                'repo': git_repo
-            }
-            regs.append(reg)
+                reg = {
+                    'file': reg_file,
+                    'lineno': reg_lineno,
+                    'reg': reg_raw,
+                    'reg_hash': reg_hash,
+                    'git_commit': latest_git_log_hash,
+                    'pl': lang,
+                    'repo': git_repo
+                }
+                regs.append(reg)
 
     os.chdir(cwd)
     return regs
