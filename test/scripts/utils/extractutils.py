@@ -126,8 +126,9 @@ def dumpRegs():
     for row in rs:
         jrs.append(dict(zip(row_headers, row)))
 
-    jsonFile = join('./data', str(int(datetime.today().timestamp() * 1000)) + '.json')
-    regFile = join('./data', str(int(datetime.today().timestamp() * 1000)) + '.txt')
+    timestamp = str(int(datetime.today().timestamp() * 1000))
+    jsonFile = join('./data', timestamp + '.json')
+    regFile = join('./data', timestamp + '.txt')
     with open(jsonFile, 'w') as jf:
         json.dump(jrs, jf)
     with open(regFile, 'w') as rf:
