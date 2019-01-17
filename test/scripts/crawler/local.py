@@ -5,6 +5,7 @@ import os
 import sys
 import re
 
+from importlib import util
 from os import makedirs
 from os.path import exists, join
 
@@ -23,24 +24,26 @@ def txtRegs(regs, developer, project, dataDir = './data'):
 
     return txtName
 
-def extractRegexFromLocalRepo(lang, developer, project, dir):
-    supportedLang = ['JavaScript', 'Python', 'Java', 'PHP']
-
+def downloadProject(lang, developer, project, dir):
     if isProjectExist(developer, project):
         print(developer + '/' + project, 'already exists')
     else:
         langDir = join(dir, lang)
         getGitProject(developer, project, langDir)
-        projDir = join(langDir, project)
 
-        regs = []
-        for tmpLang in supportedLang:
-            modname = 'scripts.extractor.' + tmpLang
-            modexist = importlib.util.find_spec(modname)
-            if modexist is None:
-                print(modname, 'is not exist')
-            else:
-                mod = importlib.import_module(modname)
-                regs += mod.searchFile(projDir)
+    return join(dir, lang, project)
 
-        return txtRegs(regs, developer, project)
+def extractRegexFromLocalRepo(developer, project, projDir):
+    supportedLang = ['JavaScript', 'Python', 'Java', 'PHP']
+
+    regs = []
+    for tmpLang in supportedLang:
+        modname = 'scripts.extractor.' + tmpLang
+        modexist = importlib.util.find_spec(modname)
+        if modexist is None:
+            print(modname, 'is not exist')
+        else:
+            mod = importlib.import_module(modname)
+            regs += mod.searchFile(projDir)
+
+    return txtRegs(regs, developer, project)

@@ -4,10 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringJoiner;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultCaret;
 
 public class GUI extends JFrame{
 	private static final long serialVersionUID = -9033026569950747184L;
@@ -27,7 +32,7 @@ public class GUI extends JFrame{
 	private JMenuItem license = new JMenuItem("License");
 	private JMenuItem copyright = new JMenuItem("Copyright");
 	
-	private String[] regCols = {"Regex", "File", "Lineno"};
+	private String[] regCols = {"Regex", "File", "Lineno", "Status", "Attack String"};
 	DefaultTableModel model = new DefaultTableModel(10, regCols.length);
 	private JTable regTable = new JTable(model);
 	private JScrollPane regSPane = new JScrollPane(regTable);
@@ -37,6 +42,7 @@ public class GUI extends JFrame{
 	private JTextField atkName = new JTextField("");
 	private JTextField projName = new JTextField("");
 	private JTextArea consoler = new JTextArea("");
+	private JScrollPane scrollConsoler = new JScrollPane(consoler);
 	
 	public static void main(String[] args) {
 		GUI gui = new GUI();
@@ -49,7 +55,7 @@ public class GUI extends JFrame{
 	}
 	
 	public GUI() {
-		this.setSize(800, 600);
+		this.setSize(1200, 600);
 		this.setTitle("ReScue");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new GridLayout(1,2));
@@ -82,8 +88,11 @@ public class GUI extends JFrame{
 		right.setLayout(new BorderLayout());
 		rightUp.setBorder(BorderFactory.createTitledBorder("Selected Attacker"));
 		right.add(rightUp, BorderLayout.NORTH);
-		consoler.setBorder(BorderFactory.createTitledBorder("Runtime Output"));
-		right.add(consoler, BorderLayout.CENTER);
+		consoler.setLineWrap(true);
+		scrollConsoler.setBorder(BorderFactory.createTitledBorder("Runtime Output"));
+		DefaultCaret caret = (DefaultCaret) consoler.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		right.add(scrollConsoler, BorderLayout.CENTER);
 		this.add(right);
 		
 		license.addActionListener(new ActionListener() {
@@ -114,9 +123,29 @@ public class GUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
-				if ((repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
-					guiMsg(repo);
-				} else guiMsg("Error: Illegal repo url");
+				if (repo != null && repo.length() > 0 && (repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
+					guiMsg("Input url: " + repo);
+					
+					String[] cmd = {"python3", "guitester.py", "-down", "-url", repo};
+					ProcessBuilder pb = new ProcessBuilder(cmd);
+					pb.directory(new File("./test/"));
+					String result = "";
+					try {
+						Process p = pb.start();
+						final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+				        StringJoiner sj = new StringJoiner(System.getProperty("line.separator"));
+				        reader.lines().iterator().forEachRemaining(sj::add);
+				        result = sj.toString();
+				        p.waitFor();
+				        p.destroy();
+					} catch (IOException | InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					guiMsg(result);
+				}
 			}
 		});
 		loadReScue.addActionListener(new ActionListener() {

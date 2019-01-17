@@ -73,6 +73,8 @@ def attack(attacker, regexes):
     # Clock end
     elapsed_time = time.time() - start_time
     print('Elapsed ' + str(elapsed_time) + " seconds.")
+    
+    return whole_log_path
 
 # # If input arguments are correct
 # if (len(sys.argv) == 3):

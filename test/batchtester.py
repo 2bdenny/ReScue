@@ -18,6 +18,7 @@ parser.add_argument('-dump', default = False, action = 'store_true', help = 'Dum
 
 def test(args):
     if args.attack:
+        print('Attack', args.attacker, args.regexes)
         attack(args.attacker, args.regexes)
     if args.collect:
         if args.logDir is None or args.logDir == '':
