@@ -10,16 +10,26 @@ import time
 from os.path import join
 from random import randint
 from scripts.crawler.git import *
+from scripts.crawler.local import *
 
 # Maximum extract project numbers once
 TODAY_MAX_COUNT = 5
 CURRENT_SUPPORT_LANG = ['Java', 'JavaScript', 'Python', 'PHP']
 
 def test(args):
-    if args.url is not None and args.url != '':
+    if args.local and args.url is not None and args.url != '':
         (lang, developer, project, dir) = analyzeGitUrl(args.url, args.dir)
         print(lang, developer, project, dir)
-        extractRegexFromGitRepo(lang, developer, project, dir)
+        if lang is not None:
+            txtName = extractRegexFromLocalRepo(lang, developer, project, dir)
+            os.system('python batchtester.py -reg ' + txtName + '.txt')
+            print('Local test end')
+
+    if not args.local and args.url is not None and args.url != '':
+        (lang, developer, project, dir) = analyzeGitUrl(args.url, args.dir)
+        print(lang, developer, project, dir)
+        if lang is not None:
+            extractRegexFromGitRepo(lang, developer, project, dir)
 
     if args.key is not None and args.key != '':
         repos = queryGitHubRepos(args.key)
@@ -42,6 +52,7 @@ def test(args):
 
 
 parser = argparse.ArgumentParser()
+parser.add_argument('-local', default = False, action = 'store_true', help = 'Current url is work for gui-local')
 parser.add_argument('-url', type = str, default = '', help = 'Git repo url only')
 parser.add_argument('-key', type = str, default = '', help = 'Search key of git repo')
 parser.add_argument('-dir', type = str, default = './PUTs/', help = 'Store git repo in this dir')

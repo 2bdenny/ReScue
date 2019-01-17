@@ -57,7 +57,7 @@ def getGitProject(developer, project, dir):
 
     if not exists(dir):
         makedirs(dir)
-    
+
     os.chdir(dir)
     if not exists(project):
         os.system('git clone ' + ssh_url)
@@ -96,4 +96,5 @@ def extractRegexFromGitRepo(lang, developer, project, dir):
             print(modname, 'is not exist')
         else:
             mod = importlib.import_module(modname)
-            mod.searchFile(projDir)
+            regs = mod.searchFile(projDir)
+            storeRegs(regs)

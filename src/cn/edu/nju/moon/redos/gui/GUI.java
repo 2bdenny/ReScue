@@ -33,12 +33,19 @@ public class GUI extends JFrame{
 	private JScrollPane regSPane = new JScrollPane(regTable);
 	
 	private JPanel right = new JPanel();
-	private JLabel attacker = new JLabel("Attacker");
+	private JPanel rightUp = new JPanel();
+	private JTextField atkName = new JTextField("");
+	private JTextField projName = new JTextField("");
 	private JTextArea consoler = new JTextArea("");
 	
 	public static void main(String[] args) {
 		GUI gui = new GUI();
 		gui.setVisible(true);
+	}
+	
+	private void guiMsg(String msg) {
+		consoler.append(msg);
+//		consoler.repaint();
 	}
 	
 	public GUI() {
@@ -65,9 +72,16 @@ public class GUI extends JFrame{
 		regSPane.setBorder(BorderFactory.createTitledBorder("Extracted Regexes"));
 		this.add(regSPane);
 		
+		rightUp.setLayout(new GridLayout(1, 2));
+		atkName.setBorder(BorderFactory.createTitledBorder("Attacker"));
+		atkName.setEditable(false);
+		rightUp.add(atkName);
+		projName.setBorder(BorderFactory.createTitledBorder("Project"));
+		projName.setEditable(false);
+		rightUp.add(projName);
 		right.setLayout(new BorderLayout());
-		attacker.setBorder(BorderFactory.createTitledBorder("Selected Attacker"));
-		right.add(attacker, BorderLayout.NORTH);
+		rightUp.setBorder(BorderFactory.createTitledBorder("Selected Attacker"));
+		right.add(rightUp, BorderLayout.NORTH);
 		consoler.setBorder(BorderFactory.createTitledBorder("Runtime Output"));
 		right.add(consoler, BorderLayout.CENTER);
 		this.add(right);
@@ -92,7 +106,7 @@ public class GUI extends JFrame{
 				int retVal = jfc.showDialog(null, "Load");
 				if (retVal == JFileChooser.APPROVE_OPTION) {
 					File f = jfc.getSelectedFile();
-					System.out.println(f.getPath());
+					guiMsg(f.getPath());
 				}
 			}
 		});
@@ -100,7 +114,9 @@ public class GUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
-				System.out.println(repo);
+				if ((repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
+					guiMsg(repo);
+				} else guiMsg("Error: Illegal repo url");
 			}
 		});
 		loadReScue.addActionListener(new ActionListener() {
@@ -111,7 +127,8 @@ public class GUI extends JFrame{
 				int retVal = jfc.showDialog(null, "Load");
 				if (retVal == JFileChooser.APPROVE_OPTION) {
 					File f = jfc.getSelectedFile();
-					attacker.setText(f.getName());
+					guiMsg(f.getAbsolutePath());
+					atkName.setText(f.getName());
 				}
 			}
 		});
