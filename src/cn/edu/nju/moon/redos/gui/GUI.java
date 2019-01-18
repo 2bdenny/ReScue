@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -50,8 +52,28 @@ public class GUI extends JFrame{
 	}
 	
 	private void guiMsg(String msg) {
-		consoler.append(msg);
+		consoler.append(msg + "\n");
 //		consoler.repaint();
+	}
+	
+	private String executeCmd(String[] cmd, String dir) {
+		ProcessBuilder pb = new ProcessBuilder(cmd);
+		pb.directory(new File(dir));
+		String result = "";
+		try {
+			Process p = pb.start();
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+	        StringJoiner sj = new StringJoiner(System.getProperty("line.separator"));
+	        reader.lines().iterator().forEachRemaining(sj::add);
+	        result = sj.toString();
+	        p.waitFor();
+	        p.destroy();
+		} catch (IOException | InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		
+		return result;
 	}
 	
 	public GUI() {
@@ -119,32 +141,21 @@ public class GUI extends JFrame{
 				}
 			}
 		});
+	
 		loadRegexGitHub.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
 				if (repo != null && repo.length() > 0 && (repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
 					guiMsg("Input url: " + repo);
+					String project_name = getProjectNameFromUrl(repo);
+					projName.setText(project_name);
 					
 					String[] cmd = {"python3", "guitester.py", "-down", "-url", repo};
-					ProcessBuilder pb = new ProcessBuilder(cmd);
-					pb.directory(new File("./test/"));
-					String result = "";
-					try {
-						Process p = pb.start();
-						final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-				        StringJoiner sj = new StringJoiner(System.getProperty("line.separator"));
-				        reader.lines().iterator().forEachRemaining(sj::add);
-				        result = sj.toString();
-				        p.waitFor();
-				        p.destroy();
-					} catch (IOException | InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					
-					guiMsg(result);
+					String dir = "./test/";
+					String result = executeCmd(cmd, dir);
+					String txtName = getTxtNameFromLog(result);
+					guiMsg("Load project successfully");
 				}
 			}
 		});
@@ -161,5 +172,24 @@ public class GUI extends JFrame{
 				}
 			}
 		});
+	}
+	
+	private String getProjectNameFromUrl(String url) {
+		Pattern pn = Pattern.compile("^.*/(.*)\\.git");
+		Matcher mn = pn.matcher(url);
+		if (mn.find()) return mn.group(1);
+		guiMsg("Get project name from url: " + url + " failed");
+		return "";
+	}
+	
+	private String getTxtNameFromLog(String log) {
+		String[] lines = log.split("\n");
+		String lastLine = lines[lines.length - 1];
+		
+		Pattern p = Pattern.compile("^txtName: (.*)$");
+		Matcher m = p.matcher(lastLine);
+		if (m.find()) return m.group(1);
+		guiMsg("Get txtName from Log failed\n Log is: " + log);
+		return "";
 	}
 }
