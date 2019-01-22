@@ -8,6 +8,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +19,9 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.DefaultCaret;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class GUI extends JFrame{
 	private static final long serialVersionUID = -9033026569950747184L;
@@ -41,10 +48,15 @@ public class GUI extends JFrame{
 	
 	private JPanel right = new JPanel();
 	private JPanel rightUp = new JPanel();
-	private JTextField atkName = new JTextField("");
-	private JTextField projName = new JTextField("");
+	private JTextField atkNameField = new JTextField("ReScue.jar");
+	private JTextField projNameField = new JTextField("");
 	private JTextArea consoler = new JTextArea("");
 	private JScrollPane scrollConsoler = new JScrollPane(consoler);
+	
+	private String projName;
+	private String atkName = "ReScue.jar";
+	private String txtName;
+	private String dir = "./test/";
 	
 	public static void main(String[] args) {
 		GUI gui = new GUI();
@@ -82,51 +94,70 @@ public class GUI extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new GridLayout(1,2));
 		
+		// File items in menu bar
 		files.add(loadRegexLocal);
 		files.add(loadRegexGitHub);
 		files.add(loadReScue);
 		menuBar.add(files);
 		
+		// Operation items in menu bar
 		runs.add(attack);
 		runs.add(genReport);
 		menuBar.add(runs);
 		
+		// Information in menu bar
 		about.add(license);
 		about.add(copyright);
 		menuBar.add(about);
 		
+		// Need a menu bar
 		this.setJMenuBar(menuBar);
+		
+		// Extracted regexes in left
 		model.setColumnIdentifiers(regCols);
 		regSPane.setBorder(BorderFactory.createTitledBorder("Extracted Regexes"));
 		this.add(regSPane);
 		
+		// Informations in right up corner
 		rightUp.setLayout(new GridLayout(1, 2));
-		atkName.setBorder(BorderFactory.createTitledBorder("Attacker"));
-		atkName.setEditable(false);
-		rightUp.add(atkName);
-		projName.setBorder(BorderFactory.createTitledBorder("Project"));
-		projName.setEditable(false);
-		rightUp.add(projName);
+		atkNameField.setBorder(BorderFactory.createTitledBorder("Attacker"));
+		atkNameField.setEditable(false);
+		rightUp.add(atkNameField);
+		projNameField.setBorder(BorderFactory.createTitledBorder("Project"));
+		projNameField.setEditable(false);
+		rightUp.add(projNameField);
 		right.setLayout(new BorderLayout());
 		rightUp.setBorder(BorderFactory.createTitledBorder("Selected Attacker"));
 		right.add(rightUp, BorderLayout.NORTH);
+		
+		// Consoler in right down corner
 		consoler.setLineWrap(true);
 		scrollConsoler.setBorder(BorderFactory.createTitledBorder("Runtime Output"));
 		DefaultCaret caret = (DefaultCaret) consoler.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		right.add(scrollConsoler, BorderLayout.CENTER);
+		
+		// The whole right
 		this.add(right);
 		
 		license.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "https://github.com/2bdenny/ReScue/blob/master/LICENSE", "ReScue License", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(
+					null, 
+					"https://github.com/2bdenny/ReScue/blob/master/LICENSE", "ReScue License", 
+					JOptionPane.INFORMATION_MESSAGE
+				);
 			}
 		});
 		copyright.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "© 2018 INSTITUTE OF COMPUTER SOFTWARE, NANJING UNIVERSITY.", "ReScue Copyright", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(
+					null, 
+					"© 2018 INSTITUTE OF COMPUTER SOFTWARE, NANJING UNIVERSITY.", "ReScue Copyright", 
+					JOptionPane.INFORMATION_MESSAGE
+				);
 			}
 		});
 		loadRegexLocal.addActionListener(new ActionListener() {
@@ -148,14 +179,15 @@ public class GUI extends JFrame{
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
 				if (repo != null && repo.length() > 0 && (repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
 					guiMsg("Input url: " + repo);
-					String project_name = getProjectNameFromUrl(repo);
-					projName.setText(project_name);
+					projName = getProjectNameFromUrl(repo);
+					projNameField.setText(projName);
 					
 					String[] cmd = {"python3", "guitester.py", "-down", "-url", repo};
-					String dir = "./test/";
 					String result = executeCmd(cmd, dir);
-					String txtName = getTxtNameFromLog(result);
+					txtName = getTxtNameFromLog(result);
 					guiMsg("Load project successfully");
+					
+					loadRegex(txtName);
 				}
 			}
 		});
@@ -168,17 +200,36 @@ public class GUI extends JFrame{
 				if (retVal == JFileChooser.APPROVE_OPTION) {
 					File f = jfc.getSelectedFile();
 					guiMsg(f.getAbsolutePath());
-					atkName.setText(f.getName());
+					atkNameField.setText(f.getName());
 				}
 			}
 		});
+	}
+	
+	private void loadRegex(String txtName) {
+		try {
+			Path jsonRegs = Paths.get(dir, "data", txtName + ".json");
+			String content = new String(Files.readAllBytes(jsonRegs), "UTF-8");
+			JSONArray regs = new JSONArray(content);
+			model.setRowCount(regs.length());
+			for (int i = 0; i < regs.length(); i++) {
+				JSONObject jo = regs.getJSONObject(i);
+				model.setValueAt(jo.getString("reg"), i, 0);
+				model.setValueAt(jo.getString("file"), i, 1);
+				model.setValueAt(jo.getString("lineno"), i, 2);
+				model.setValueAt("TODO", i, 3);
+				model.setValueAt("", i, 4);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private String getProjectNameFromUrl(String url) {
 		Pattern pn = Pattern.compile("^.*/(.*)\\.git");
 		Matcher mn = pn.matcher(url);
 		if (mn.find()) return mn.group(1);
-		guiMsg("Get project name from url: " + url + " failed");
+		this.guiMsg("Get project name from url: " + url + " failed");
 		return "";
 	}
 	
@@ -189,7 +240,7 @@ public class GUI extends JFrame{
 		Pattern p = Pattern.compile("^txtName: (.*)$");
 		Matcher m = p.matcher(lastLine);
 		if (m.find()) return m.group(1);
-		guiMsg("Get txtName from Log failed\n Log is: " + log);
+		this.guiMsg("Get txtName from Log failed\n Log is: " + log);
 		return "";
 	}
 }
