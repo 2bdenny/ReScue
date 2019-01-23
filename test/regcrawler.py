@@ -46,7 +46,7 @@ def test(args):
                 return
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-url', type = str, default = '', help = 'Git repo url only')
 parser.add_argument('-key', type = str, default = '', help = 'Search key of git repo')
 parser.add_argument('-dir', type = str, default = './PUTs/', help = 'Store git repo in this dir')

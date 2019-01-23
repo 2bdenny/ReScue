@@ -29,17 +29,17 @@ public class GUI extends JFrame{
 	private JMenuBar menuBar = new JMenuBar();
 	
 	private JMenu files = new JMenu("File");
-	private JMenuItem loadRegexLocal = new JMenuItem("Load regex file from local");
-	private JMenuItem loadRegexGitHub = new JMenuItem("Load regex file from GitHub");
-	private JMenuItem loadReScue = new JMenuItem("Load rescue ...");
+	private JMenuItem loadRegexLocalItem = new JMenuItem("Load regex file from local");
+	private JMenuItem loadRegexGitHubItem = new JMenuItem("Load regex file from GitHub");
+	private JMenuItem loadReScueItem = new JMenuItem("Load rescue ...");
 	
 	private JMenu runs = new JMenu("Run");
-	private JMenuItem attack = new JMenuItem("Attack");
-	private JMenuItem genReport = new JMenuItem("Generate report");
+	private JMenuItem attackItem = new JMenuItem("Attack");
+	private JMenuItem genReportItem = new JMenuItem("Generate report");
 	
 	private JMenu about = new JMenu("About");
-	private JMenuItem license = new JMenuItem("License");
-	private JMenuItem copyright = new JMenuItem("Copyright");
+	private JMenuItem licenseItem = new JMenuItem("License");
+	private JMenuItem copyrightItem = new JMenuItem("Copyright");
 	
 	private String[] regCols = {"Regex", "File", "Lineno", "Status", "Attack String"};
 	DefaultTableModel model = new DefaultTableModel(10, regCols.length);
@@ -95,19 +95,19 @@ public class GUI extends JFrame{
 		this.setLayout(new GridLayout(1,2));
 		
 		// File items in menu bar
-		files.add(loadRegexLocal);
-		files.add(loadRegexGitHub);
-		files.add(loadReScue);
+		files.add(loadRegexLocalItem);
+		files.add(loadRegexGitHubItem);
+		files.add(loadReScueItem);
 		menuBar.add(files);
 		
 		// Operation items in menu bar
-		runs.add(attack);
-		runs.add(genReport);
+		runs.add(attackItem);
+		runs.add(genReportItem);
 		menuBar.add(runs);
 		
 		// Information in menu bar
-		about.add(license);
-		about.add(copyright);
+		about.add(licenseItem);
+		about.add(copyrightItem);
 		menuBar.add(about);
 		
 		// Need a menu bar
@@ -140,7 +140,7 @@ public class GUI extends JFrame{
 		// The whole right
 		this.add(right);
 		
-		license.addActionListener(new ActionListener() {
+		licenseItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(
@@ -150,7 +150,7 @@ public class GUI extends JFrame{
 				);
 			}
 		});
-		copyright.addActionListener(new ActionListener() {
+		copyrightItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(
@@ -160,7 +160,7 @@ public class GUI extends JFrame{
 				);
 			}
 		});
-		loadRegexLocal.addActionListener(new ActionListener() {
+		loadRegexLocalItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jfc = new JFileChooser("./test/PUTs");
@@ -168,12 +168,20 @@ public class GUI extends JFrame{
 				int retVal = jfc.showDialog(null, "Load");
 				if (retVal == JFileChooser.APPROVE_OPTION) {
 					File f = jfc.getSelectedFile();
-					guiMsg(f.getPath());
+					guiMsg("Input local dir:" + f.getPath());
+					projNameField.setText(f.getName());
+					
+					String[] cmd = {"python3", "guitester.py", "-local", "-projDir", f.getPath()};
+					String result = executeCmd(cmd, dir);
+					txtName = getTxtNameFromLog(result);
+					guiMsg("Load project successfully");
+					
+					loadRegex(txtName);
 				}
 			}
 		});
 	
-		loadRegexGitHub.addActionListener(new ActionListener() {
+		loadRegexGitHubItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
@@ -191,7 +199,7 @@ public class GUI extends JFrame{
 				}
 			}
 		});
-		loadReScue.addActionListener(new ActionListener() {
+		loadReScueItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser jfc = new JFileChooser("./release");
@@ -202,6 +210,13 @@ public class GUI extends JFrame{
 					guiMsg(f.getAbsolutePath());
 					atkNameField.setText(f.getName());
 				}
+			}
+		});
+		
+		attackItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String[] cmd = {"python3", "batchtester.py"};
 			}
 		});
 	}

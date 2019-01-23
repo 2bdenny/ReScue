@@ -6,7 +6,7 @@ from scripts.evaluator.attack import attack
 from scripts.evaluator.collect import collect
 from scripts.utils.extractutils import *
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-atk', '--attacker', type = str, default = 'ReScue.jar', help = 'The binary attacker (It should be put in the release/ directory).', required = False)
 parser.add_argument('-reg', '--regexes', type = str, default = 'test_format.txt', help = 'The regex file (It should be put in the test/data/ directory).', required = False)
 parser.add_argument('-logDir', type = str, default = '', help = 'The log directory of the last attack result.')
