@@ -34,8 +34,8 @@ public class GUI extends JFrame{
 	private JMenuItem loadReScueItem = new JMenuItem("Load rescue ...");
 	
 	private JMenu runs = new JMenu("Run");
-	private JMenuItem attackItem = new JMenuItem("Attack");
-	private JMenuItem genReportItem = new JMenuItem("Generate report");
+	private JMenuItem attackAndCollectItem = new JMenuItem("Attack and Collect");
+	private JMenuItem reportItem = new JMenuItem("Report");
 	
 	private JMenu about = new JMenu("About");
 	private JMenuItem licenseItem = new JMenuItem("License");
@@ -56,6 +56,7 @@ public class GUI extends JFrame{
 	private String projName;
 	private String atkName = "ReScue.jar";
 	private String txtName;
+	private String logDir;
 	private String dir = "./test/";
 	
 	public static void main(String[] args) {
@@ -101,8 +102,8 @@ public class GUI extends JFrame{
 		menuBar.add(files);
 		
 		// Operation items in menu bar
-		runs.add(attackItem);
-		runs.add(genReportItem);
+		runs.add(attackAndCollectItem);
+		runs.add(reportItem);
 		menuBar.add(runs);
 		
 		// Information in menu bar
@@ -213,12 +214,39 @@ public class GUI extends JFrame{
 			}
 		});
 		
-		attackItem.addActionListener(new ActionListener() {
+		attackAndCollectItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String[] cmd = {"python3", "batchtester.py"};
+				if (txtName == null || txtName.length() == 0) {
+					guiMsg("Error: Illegal txtName");
+				} else if (atkName == null || atkName.length() == 0) {
+					guiMsg("Error: Illegal atkName");
+				} else {
+					String[] cmd = {"python3", "batchtester.py", "-a", "-reg", txtName + ".txt", "-atk", atkName};
+					String result = executeCmd(cmd, dir);
+					guiMsg(result + "\n");
+					logDir = getLogDirFromLog(result);
+					
+					String[] collectCmd = {"python3", "batchtester.py", "-c", "-reg", txtName + ".txt", "-logDir", logDir};
+					result = executeCmd(collectCmd, dir);
+					guiMsg(result + "\n");
+					// TODO update attack string cell
+				}
 			}
 		});
+	}
+	
+	private String getLogDirFromLog(String result) {
+		String[] lines = result.split("\n");
+		Pattern p = Pattern.compile("^Current log dir: (.*)$");
+		for (String line : lines) {
+			if (line.startsWith("Current log dir: ")) {
+				Matcher m = p.matcher(line);
+				if (m.find()) return m.group(1);
+			}
+		}
+		this.guiMsg("Error: Illegal log format");
+		return "";
 	}
 	
 	private void loadRegex(String txtName) {
