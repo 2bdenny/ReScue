@@ -1,6 +1,8 @@
 package cn.edu.nju.moon.redos.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.text.DefaultCaret;
 
 import org.json.JSONArray;
@@ -230,10 +234,58 @@ public class GUI extends JFrame{
 					String[] collectCmd = {"python3", "batchtester.py", "-c", "-reg", txtName + ".txt", "-logDir", logDir};
 					result = executeCmd(collectCmd, dir);
 					guiMsg(result + "\n");
-					// TODO update attack string cell
+					loadCollectSummary(logDir);
 				}
 			}
 		});
+		
+		regTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer()
+		{
+			private static final long serialVersionUID = 2959137775367628479L;
+
+			@Override
+		    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
+		    {
+		        final Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+		        if (column == 3) {
+		        	Object val = table.getValueAt(row, column);
+		        	if (val != null) {
+				        String res = val.toString();
+				        if (res.equalsIgnoreCase("safe")) {
+				        	c.setBackground(Color.GREEN);
+				        } else if (res.equalsIgnoreCase("dangerous")) {
+				        	c.setBackground(Color.RED);
+				        }
+		        	}
+		        }
+		        return c;
+		    }
+		});
+	}
+	
+	private void loadCollectSummary(String logDir) {
+		try {
+			List<String> sums = Files.readAllLines(Paths.get(dir, logDir, "collect_summary.txt"));
+			Pattern p = Pattern.compile("^(\\d+) : (.+?) : .*$");
+			for (String sum : sums) {
+				Matcher m = p.matcher(sum);
+				if (m.find()) {
+					int rno = Integer.parseInt(m.group(1));
+					String res = m.group(2);
+					if (res.equalsIgnoreCase("success")) {
+						model.setValueAt("Dangerous", rno - 1, 3);
+						Path atk_file = Paths.get(logDir, rno + "_atk.txt");
+						String atk_str = new String(Files.readAllBytes(atk_file), "UTF-8");
+						model.setValueAt(atk_str, rno - 1, 4);
+					} else {
+						model.setValueAt("Safe", rno - 1, 3);
+					}
+					regTable.repaint();
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private String getLogDirFromLog(String result) {
