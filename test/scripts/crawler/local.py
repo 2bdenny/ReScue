@@ -24,12 +24,12 @@ def txtRegs(regs, developer, project, dataDir = './data'):
 
     return txtName
 
-def downloadProject(lang, developer, project, dir):
+def downloadProject(lang, developer, project, dir, zipUrl):
     if isProjectExist(developer, project):
         print(developer + '/' + project, 'already exists')
     else:
         langDir = join(dir, lang)
-        getGitProject(developer, project, langDir)
+        getGitProject(developer, project, langDir, zipUrl)
 
     return join(dir, lang, project)
 

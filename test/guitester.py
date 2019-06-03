@@ -21,9 +21,9 @@ CURRENT_SUPPORT_LANG = ['Java', 'JavaScript', 'Python', 'PHP']
 
 def test(args):
     if args.down and args.url is not None and args.url != '':
-        (lang, developer, project, dir) = analyzeGitUrl(args.url, args.dir)
+        (lang, developer, project, dir, zipUrl, lastCommit) = analyzeGitUrl(args.url, args.dir)
         if lang is not None:
-            projDir = downloadProject(lang, developer, project, dir)
+            projDir = downloadProject(lang, developer, project, dir, zipUrl)
             print('projDir:', projDir)
             txtName = extractRegexFromLocalRepo(developer, project, projDir)
             print('txtName:', txtName)

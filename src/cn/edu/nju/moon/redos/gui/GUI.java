@@ -7,7 +7,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -56,6 +58,7 @@ public class GUI extends JFrame{
 	private JTextField projNameField = new JTextField("");
 	private JTextArea consoler = new JTextArea("");
 	private JScrollPane scrollConsoler = new JScrollPane(consoler);
+	private JButton genReport = new JButton("Generate Report");
 	
 	private String projName;
 	private String atkName = "ReScue.jar";
@@ -90,6 +93,9 @@ public class GUI extends JFrame{
 			e1.printStackTrace();
 		}
 		
+		Pattern p;
+		Matcher m;
+	
 		return result;
 	}
 	
@@ -141,6 +147,7 @@ public class GUI extends JFrame{
 		DefaultCaret caret = (DefaultCaret) consoler.getCaret();
 		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		right.add(scrollConsoler, BorderLayout.CENTER);
+		right.add(genReport, BorderLayout.SOUTH);
 		
 		// The whole right
 		this.add(right);
@@ -190,6 +197,7 @@ public class GUI extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String repo = JOptionPane.showInputDialog(null, "Paste the GitHub clone url (SSH or HTTPS)", "Input GitHub Repo", JOptionPane.DEFAULT_OPTION);
+				guiMsg(repo);
 				if (repo != null && repo.length() > 0 && (repo.startsWith("https") || repo.startsWith("git@")) && repo.endsWith(".git")) {
 					guiMsg("Input url: " + repo);
 					projName = getProjectNameFromUrl(repo);
@@ -197,10 +205,13 @@ public class GUI extends JFrame{
 					
 					String[] cmd = {"python3", "guitester.py", "-down", "-url", repo};
 					String result = executeCmd(cmd, dir);
+//					guiMsg(result);
 					txtName = getTxtNameFromLog(result);
 					guiMsg("Load project successfully");
 					
 					loadRegex(txtName);
+				} else {
+					guiMsg("Illegal repo: repo url must end with '.git'");
 				}
 			}
 		});
@@ -217,6 +228,30 @@ public class GUI extends JFrame{
 				}
 			}
 		});
+		genReport.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// 测试报告写入文件
+				try {
+					String test_report_dir = Paths.get("./test/", logDir, "test_report.txt").toString();
+					BufferedWriter bw = new BufferedWriter(new FileWriter(test_report_dir));
+					bw.write("No,Regex,File,Lineno,Status,AttackString,\n");
+					for (int i = 0; i < model.getRowCount(); i++) {
+						bw.write(i+1+",");
+						for (int j = 0; j < 5; j++) {
+							bw.write(model.getValueAt(i, j)+",");
+						}
+						bw.write("\n");
+					}
+					bw.close();
+					guiMsg("Test report is genereted in: " + test_report_dir);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
 		
 		attackAndCollectItem.addActionListener(new ActionListener() {
 			@Override
@@ -226,12 +261,17 @@ public class GUI extends JFrame{
 				} else if (atkName == null || atkName.length() == 0) {
 					guiMsg("Error: Illegal atkName");
 				} else {
-					String[] cmd = {"python3", "batchtester.py", "-a", "-reg", txtName + ".txt", "-atk", atkName};
+					String total_cmd = "python3 batchtester.py -a -reg " + txtName + ".txt -atk " + atkName;
+					guiMsg(total_cmd);
+					String[] cmd = total_cmd.split(" ");
 					String result = executeCmd(cmd, dir);
 					guiMsg(result + "\n");
 					logDir = getLogDirFromLog(result);
+//					logDir = "./test/logs/ReScue.jar/local_meteor-devel.txt/1553748560530";
 					
-					String[] collectCmd = {"python3", "batchtester.py", "-c", "-reg", txtName + ".txt", "-logDir", logDir};
+					String total_collect_cmd = "python3 batchtester.py -c -reg " + txtName + ".txt -logDir " + logDir;
+					guiMsg(total_collect_cmd);
+					String[] collectCmd = total_collect_cmd.split(" ");
 					result = executeCmd(collectCmd, dir);
 					guiMsg(result + "\n");
 					loadCollectSummary(logDir);
@@ -255,6 +295,8 @@ public class GUI extends JFrame{
 				        	c.setBackground(Color.GREEN);
 				        } else if (res.equalsIgnoreCase("dangerous")) {
 				        	c.setBackground(Color.RED);
+				        } else if (res.equalsIgnoreCase("TODO")) {
+				        	c.setBackground(Color.WHITE);
 				        }
 		        	}
 		        }
@@ -265,7 +307,7 @@ public class GUI extends JFrame{
 	
 	private void loadCollectSummary(String logDir) {
 		try {
-			List<String> sums = Files.readAllLines(Paths.get(dir, logDir, "collect_summary.txt"));
+			List<String> sums = Files.readAllLines(Paths.get("./test/", logDir, "collect_summary.txt"));
 			Pattern p = Pattern.compile("^(\\d+) : (.+?) : .*$");
 			for (String sum : sums) {
 				Matcher m = p.matcher(sum);
@@ -275,6 +317,7 @@ public class GUI extends JFrame{
 					if (res.equalsIgnoreCase("success")) {
 						model.setValueAt("Dangerous", rno - 1, 3);
 						Path atk_file = Paths.get(logDir, rno + "_atk.txt");
+//						Path atk_file = Paths.get("./test/", logDir, rno + "_atk.txt");
 						String atk_str = new String(Files.readAllBytes(atk_file), "UTF-8");
 						model.setValueAt(atk_str, rno - 1, 4);
 					} else {

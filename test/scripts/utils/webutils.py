@@ -53,7 +53,8 @@ def queryGitHubRepos(key, tops = None, lang = None, sort = 'stars', order = 'des
         tmp = {
             'lang': repo['language'],
             'project': repo['name'],
-            'developer': repo['owner']['login']
+            'developer': repo['owner']['login'],
+            'html_url': repo['html_url']
         }
         latestRepos.append(tmp)
     return latestRepos

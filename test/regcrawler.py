@@ -21,10 +21,10 @@ CURRENT_SUPPORT_LANG = ['Java', 'JavaScript', 'Python', 'PHP']
 
 def test(args):
     if args.url is not None and args.url != '':
-        (lang, developer, project, dir) = analyzeGitUrl(args.url, args.dir)
-        print(lang, developer, project, dir)
+        (lang, developer, project, dir, zipUrl, lastCommit) = analyzeGitUrl(args.url, args.dir)
+        print(lang, developer, project, dir, zipUrl, lastCommit)
         if lang is not None:
-            extractRegexFromGitRepo(lang, developer, project, dir)
+            extractRegexFromGitRepo(lang, developer, project, dir, zipUrl, lastCommit)
 
     if args.key is not None and args.key != '':
         repos = queryGitHubRepos(args.key)
@@ -32,8 +32,9 @@ def test(args):
         stopCount = 0
         for repo in repos:
             print('extracting', repo)
+            (lang, developer, project, dir, zipUrl, lastCommit) = analyzeGitUrl(repo['html_url'], args.dir)
             if repo['lang'] in CURRENT_SUPPORT_LANG:
-                extractRegexFromGitRepo(repo['lang'], repo['developer'], repo['project'], args.dir)
+                extractRegexFromGitRepo(repo['lang'], repo['developer'], repo['project'], args.dir, zipUrl, lastCommit)
             else:
                 print('language', repo['lang'], 'is not supported now')
                 continue

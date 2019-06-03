@@ -31,8 +31,8 @@ def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, r
     cwd = os.getcwd()
     os.chdir(dir)
 
-    latest_git_log_hash = getLatestCommitHash()
-    git_repo = getGitRepo()
+    # latest_git_log_hash = getLatestCommitHash()
+    # git_repo = getGitRepo()
 
     regs = []
     output = None
@@ -70,9 +70,9 @@ def getRegFromProject(dir, grepreg, inforeg, file_group = 1, lineno_group = 2, r
                     'lineno': reg_lineno,
                     'reg': reg_raw,
                     'reg_hash': reg_hash,
-                    'git_commit': latest_git_log_hash,
+                    'git_commit': '',#latest_git_log_hash,
                     'pl': lang,
-                    'repo': git_repo
+                    'repo': ''#git_repo
                 }
                 regs.append(reg)
 
@@ -101,14 +101,14 @@ def connectDB():
     return db
 
 # store regs into db
-def storeRegs(regs):
+def storeRegs(regs, lastCommit, gitRepo):
     db = connectDB()
     cs = db.cursor()
 
     # insert into db
     for reg in regs:
         sql = 'INSERT IGNORE INTO regs (reg, reg_hash, repo, file, lineno, git_commit, pl) VALUES (%s, %s, %s, %s, %s, %s, %s)'
-        val = (reg['reg'], reg['reg_hash'], reg['repo'], reg['file'], reg['lineno'], reg['git_commit'], reg['pl'])
+        val = (reg['reg'], reg['reg_hash'], gitRepo, reg['file'], reg['lineno'], lastCommit, reg['pl'])
         cs.execute(sql, val)
     db.commit()
 
