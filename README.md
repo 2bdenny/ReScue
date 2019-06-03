@@ -2,7 +2,7 @@
 > ReScue is under testing & debugging now.
 
 ## Using ReScue
-### Simple use
+### Simple usage (commandline)
 Download the zip, decompress it, then:
 ```
 cd release/
@@ -28,6 +28,14 @@ TIME: 20.548258612 (s)
 Attack success, attack string is:
 aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
+
+### Simple usage (gui)
+Download the zip, decompress it, then:
+1. In the root directory of this project, run `java -jar release/ReScue-gui.jar`
+2. Load source code by `File-Load...`
+3. Attack the collected regexes and summerize the result by `Run-Attack and Collect`
+4. Generate the report by `Generate Report` if need
+
 
 ### Batch test
 Download the zip, decompress it, then:
