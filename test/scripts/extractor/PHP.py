@@ -3,8 +3,11 @@ import sys
 
 from scripts.utils.extractutils import *
 
+def getExtension():
+    return ".php"
+
 def searchFile(dir):
-    regs = getRegFromProject(dir, 'grep -P "preg_[a-z_]+\s*\\(\s*([\\\'\\\"])(.).*?\\2[imsxuXeSUAD]{0,3}\\1," -rno --include \\*.php', r'(.*\.php):(\d+):preg_[a-z_]+\s*\(\s*([\'\"])(.)(.*)\4[imsxuXeSUAD]{0,5}\3,$', raw_group = 5, lang = 'php')
+    regs = getRegFromProject(dir, r'preg_[a-z_]+\s*\(\s*"(.)(?P<target>.+?)\1[imsxuXeSUAD]{0,3}",', lang = 'php', extension = getExtension())
 
     return regs
     # storeRegs(regs)

@@ -16,22 +16,13 @@ from scripts.utils.webutils import *
 def txtRegs(regs, developer, project, dataDir = './data'):
     txtName = developer + '_' + project
 
-    with open(join(dataDir, txtName + '.json'), 'w') as jf:
+    with open(join(dataDir, txtName + '.json'), 'w', encoding='utf8') as jf:
         json.dump(regs, jf)
-    with open(join(dataDir, txtName + '.txt'), 'w') as tf:
+    with open(join(dataDir, txtName + '.txt'), 'w', encoding='utf8') as tf:
         for reg in regs:
             tf.write(reg['reg'] + '\n')
 
     return txtName
-
-def downloadProject(lang, developer, project, dir, zipUrl):
-    if isProjectExist(developer, project):
-        print(developer + '/' + project, 'already exists')
-    else:
-        langDir = join(dir, lang)
-        getGitProject(developer, project, langDir, zipUrl)
-
-    return join(dir, lang, project)
 
 def extractRegexFromLocalRepo(developer, project, projDir):
     supportedLang = ['JavaScript', 'Python', 'Java', 'PHP']

@@ -42,3 +42,4 @@ tmp*
 data/
 
 *.pyc
+.idea

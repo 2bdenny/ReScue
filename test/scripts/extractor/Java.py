@@ -3,8 +3,11 @@ import sys
 
 from scripts.utils.extractutils import *
 
+def getExtension():
+    return ".java"
+
 def searchFile(dir):
-    regs = getRegFromProject(dir, 'grep -P "(Pattern\.compile|\.replace)\(\\\".*?[^\\\\\\\\]\\\"" -rno --include \\*.java', r'(.*\.java):(\d+):(Pattern\.compile|\.replace)\s*\(\s*\"(.*?)\"$', raw_group = 4, lang = 'java')
+    regs = getRegFromProject(dir, r'(?:Pattern\.compile|\.replace)\("(?P<target>.*?[^\\])"', lang = 'java', extension = getExtension())
     return regs
     # storeRegs(regs)
 

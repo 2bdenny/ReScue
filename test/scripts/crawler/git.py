@@ -3,6 +3,7 @@ import importlib
 import os
 import sys
 import re
+import platform
 
 from os import makedirs
 from os.path import exists, join
@@ -32,10 +33,14 @@ def analyzeGitUrl(url, storeDir):
     repo_page = 'https://github.com/' + developer + '/' + project
     resp = requestPage(repo_page)
 
-    res = re.findall('<span class="lang">(.*?)</span>\s*<span class="percent">(.*%)</span>', resp)
-    zip_res = re.findall('href="(.*\.zip)">Download ZIP</a>', resp)
+    res = re.findall('<a.*?Repository, language.*?</svg>.*?(?:<span.*?>(.*?)</span>)+.*?</a>', resp, re.M | re.S)
+    #zip_res = re.findall('<a.*?DOWNLOAD_ZIP.*?href="(.*\.zip)">.*?</a>', resp, re.M | re.S)
+    zip_res = re.findall('href="(.*\.zip)">', resp, re.M | re.S)
+    print(res)
+    print(zip_res)
+    print(resp)
+    exit(1)
     zipUrl = 'https://github.com' + zip_res[0]
-    # print(resp)
     cmt_res = re.findall('<a class="commit-tease-sha" href=".*?commit/(.*?)" data-pjax>', resp)
     lastCommit = cmt_res[0]
 

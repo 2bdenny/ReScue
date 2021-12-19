@@ -3,9 +3,12 @@ import sys
 
 from scripts.utils.extractutils import *
 
-def searchFile(dir):
-    regs = getRegFromProject(dir, 'egrep "(match|search|compile|find(all)?|split|sub)\s*\(\s*r?([\\\'\\\"]).+?\\3," -rno --include \\*.py', r'(.*\.py):(\d+):[a-z]+\s*\(\s*r?([\'\"])(.+?)\3,$', raw_group = 4, lang = 'python')
+def getExtension():
+    return ".py"
 
+def searchFile(dir):
+    regs = getRegFromProject(dir, r'[^\'](match|search|compile|find(all)?|split|sub)\s*\(\s*r?\'(?P<target>.+?)\',', lang = 'python', extension = getExtension())
+    regs += getRegFromProject(dir, r'[^\'](match|search|compile|find(all)?|split|sub)\s*\(\s*r?"(?P<target>.+?)"[,\)]', lang = 'python', extension = getExtension())
     return regs
     # storeRegs(regs)
 

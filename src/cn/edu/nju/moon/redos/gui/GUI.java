@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.text.DefaultCaret;
 
 import org.json.JSONArray;
@@ -90,6 +89,7 @@ public class GUI extends JFrame{
 	        p.waitFor();
 	        p.destroy();
 		} catch (IOException | InterruptedException e1) {
+			System.out.println(String.join(" ", cmd));
 			e1.printStackTrace();
 		}
 		
@@ -107,7 +107,7 @@ public class GUI extends JFrame{
 		
 		// File items in menu bar
 		files.add(loadRegexLocalItem);
-		files.add(loadRegexGitHubItem);
+//		files.add(loadRegexGitHubItem);
 		files.add(loadReScueItem);
 		menuBar.add(files);
 		
@@ -175,17 +175,19 @@ public class GUI extends JFrame{
 		loadRegexLocalItem.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser jfc = new JFileChooser("./test/PUTs");
+				JFileChooser jfc = new JFileChooser("./test/");
 				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				int retVal = jfc.showDialog(null, "Load");
 				if (retVal == JFileChooser.APPROVE_OPTION) {
 					File f = jfc.getSelectedFile();
 					guiMsg("Input local dir:" + f.getPath());
 					projNameField.setText(f.getName());
-					
-					String[] cmd = {"python3", "guitester.py", "-local", "-projDir", f.getPath()};
+
+					String fPath = f.getPath();
+					String[] cmd = {"python3", "guitester.py", "-local", "-projDir", fPath};
 					String result = executeCmd(cmd, dir);
-					txtName = getTxtNameFromLog(result);
+					guiMsg(result);
+					txtName = "local_" + f.getName();
 					guiMsg("Load project successfully");
 					
 					loadRegex(txtName);
@@ -262,6 +264,7 @@ public class GUI extends JFrame{
 					guiMsg("Error: Illegal atkName");
 				} else {
 					String total_cmd = "python3 batchtester.py -a -reg " + txtName + ".txt -atk " + atkName;
+					System.out.println(total_cmd);
 					guiMsg(total_cmd);
 					String[] cmd = total_cmd.split(" ");
 					String result = executeCmd(cmd, dir);
@@ -354,7 +357,7 @@ public class GUI extends JFrame{
 				JSONObject jo = regs.getJSONObject(i);
 				model.setValueAt(jo.getString("reg"), i, 0);
 				model.setValueAt(jo.getString("file"), i, 1);
-				model.setValueAt(jo.getString("lineno"), i, 2);
+				model.setValueAt(jo.getInt("lineno"), i, 2);
 				model.setValueAt("TODO", i, 3);
 				model.setValueAt("", i, 4);
 			}

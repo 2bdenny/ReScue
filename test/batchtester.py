@@ -25,12 +25,13 @@ def test(args):
             print('Error: logDir not set.')
             return
         collect(args.logDir, args.regexes)
-    if args.dump:
-        dumpRegs()
+#     if args.dump:
+#         dumpRegs()
 
-if len(sys.argv) == 1:
-    parser.print_help()
-else:
-    args = parser.parse_args()
-    # print(args)
-    test(args)
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        parser.print_help()
+    else:
+        args = parser.parse_args()
+        # print(args)
+        test(args)

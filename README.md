@@ -1,7 +1,7 @@
 
-> ReScue is under testing & debugging now.
+> **ReScue is under refactoring now.**
 
-## Using ReScue
+## Using ReScue (Linux)
 ### Simple usage (commandline)
 Download the zip, decompress it, then:
 ```
@@ -114,3 +114,6 @@ ReScue
 1. The main class for ReScue is located in `cn.edu.nju.moon.redos.tester.RedosTester.java`
 2. To build the `jar` file, create a `java project` in `Eclipse` on directory `ReScue` and use `File - Export-Runnable JAR File - Launch configuration: RedosTester` to generate it
 3. **Do not forget to import dependencies in `Java Build Path`**
+
+## Using ReScue (Windows)
+> Under developing...

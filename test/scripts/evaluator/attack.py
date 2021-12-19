@@ -4,6 +4,8 @@ import os
 import re
 import sys
 import time
+import platform
+import subprocess
 
 from datetime import datetime
 from os import makedirs
@@ -19,7 +21,10 @@ def thename(target):
     regfile = os.path.join(logDir, 'r' + str(index) + '.txt')
     logfile = os.path.join(logDir, str(index) + '.txt')
 
-    os.system('timeout 600 java -d64 -Xms512m -Xmx2g -jar ' + atk + ' -q -ml 128 -pz 200 -g 100 -mp 10 -cp 10 < ' + regfile + ' > ' + logfile + ' 2>&1')
+    if platform.system() == 'Windows':
+        os.system('java -d64 -Xms512m -Xmx2g -jar ' + atk + ' -q -ml 128 -pz 200 -g 100 -mp 10 -cp 10 < ' + regfile + ' > ' + logfile + ' 2>&1')
+    else:
+        os.system('timeout 60 java -d64 -Xms512m -Xmx2g -jar ' + atk + ' -q -ml 128 -pz 200 -g 100 -mp 10 -cp 10 < ' + regfile + ' > ' + logfile + ' 2>&1')
     os.system('rm ' + regfile)
 
 # Attack method
